@@ -44,11 +44,10 @@ module.exports = {
         {
           name,
           email,
-          profile_picture: "",
           password: await bcrypt.hash(password, 12),
-          logged_in_at: moment().format(),
           created_at: moment().format(),
           updated_at: moment().format(),
+          logged_in_at: moment().format(),
         },
         err => {
           if (err) throw new Error(err)
