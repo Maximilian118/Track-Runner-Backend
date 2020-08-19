@@ -8,9 +8,11 @@ module.exports = authSchema = `
     profile_picture: String!
     posts: [Post]!
     following: [User]!
+    calendar: [Post]!
     logged_in_at: String!
     created_at: String!
     updated_at: String!
+    password: String
   }
 
   input userInput {
@@ -18,6 +20,5 @@ module.exports = authSchema = `
     email: String!
     password: String!
     pass_confirm: String!
-    profile_picture: String!
   }
 `

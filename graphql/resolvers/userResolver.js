@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs")
 const moment = require("moment")
 
 const User = require("../../models/user")
+const Post = require("../../models/post")
 
 const { 
   userPopulationObj,
