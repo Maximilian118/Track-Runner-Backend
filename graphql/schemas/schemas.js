@@ -15,7 +15,7 @@ module.exports = buildSchema(`
 
   type rootMutation {
     createUser(userInput: userInput): User!
-    deleteUser: User!
+    deleteUser(_id: String!): User!
   }
 
   schema {
