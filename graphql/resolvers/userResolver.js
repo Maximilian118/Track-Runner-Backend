@@ -16,29 +16,53 @@ module.exports = {
       const {name, email, password, pass_confirm} = args.userInput
 
       if (!name) {
-        throw new Error("Please enter your name. Feel free to make one up!")
+        throw new Error(JSON.stringify({
+          type: "name",
+          message: "Please enter your name. Feel free to make one up!",
+        }))
       } else if (!/^[a-zA-Z\s-']{1,30}$/.test(name)) {
-        throw new Error("Your name cannot contain numbers or special characters other than hyphens and apostrophes.")
+        throw new Error(Error(JSON.stringify({
+          type: "name",
+          message: "Your name cannot contain numbers or special characters other than hyphens and apostrophes.",
+        })))
       }
 
       if (!email) {
         throw new Error("Please enter an email address.")
       } else if (await User.findOne({email})) {
-        throw new Error("A User by that email already exists!")
+        throw new Error(JSON.stringify({
+          type: "email",
+          message: "A User by that email already exists!",
+        }))
       } else if (!/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/.test(email)) {
-        throw new Error("Please enter a valid email address.")
+        throw new Error(JSON.stringify({
+          type: "email",
+          message: "Please enter a valid email address.",
+        }))
       }
 
       if (!password) {
-        throw new Error("Please enter a password.")
+        throw new Error(JSON.stringify({
+          type: "password",
+          message: "Please enter a password.",
+        }))
       } else if (!/^(?=.*\d)(?=.*[a-zA-Z])(?!.*\s).{8,20}$/.test(password)) {
-        throw new Error("Your password must have at least one letter and one number. Minimum 8 characters.")
+        throw new Error(JSON.stringify({
+          type: "password",
+          message: "Your password must have at least one letter and one number. Minimum 8 characters.",
+        }))
       }
 
       if (!pass_confirm) {
-        throw new Error("Please enter your password confirmation.")
+        throw new Error(JSON.stringify({
+          type: "passConfirm",
+          message: "Please enter your password confirmation.",
+        }))
       } else if (password !== pass_confirm) {
-        throw new Error("Passwords do not match.")
+        throw new Error(JSON.stringify({
+          type: "passConfirm",
+          message: "Passwords do not match.",
+        }))
       }
 
       const user = new User(
@@ -69,12 +93,21 @@ module.exports = {
   login: async ({email, password}) => {
     try {
       const user = await User.findOne({email}).populate(userPopulationObj)
-      if (!user) throw new Error("An account by that email was not found!")
+      if (!user) throw new Error(JSON.stringify({
+        type: "email",
+        message: "An account by that email was not found!",
+      }))
 
       if (!password) {
-        throw new Error("Please enter your password.") 
+        throw new Error(JSON.stringify({
+          type: "password",
+          message: "Please enter your password.",
+        })) 
       } else if (!bcrypt.compareSync(password, user.password)) {
-        throw new Error("Incorrect password.")
+        throw new Error(JSON.stringify({
+          type: "password",
+          message: "Incorrect password.",
+        }))
       }
 
       user.logged_in_at = moment().format()
