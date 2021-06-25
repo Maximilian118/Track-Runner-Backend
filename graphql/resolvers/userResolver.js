@@ -139,13 +139,31 @@ module.exports = {
       throw err
     }
   },
+  forgot: async ({email}) => {
+    try {
+      const user = await User.findOne({email}).populate(userPopulationObj)
+      if (!user) throw new Error(JSON.stringify({
+        type: "email",
+        message: "An account by that email was not found!",
+      }))
+
+      return {
+        ...user._doc,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
   deleteUser: async ({_id}, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
     try {
       const user = await User.findOne({_id}).populate(userPopulationObj)
-      if (!user) throw new Error("A User by that ID was not found!")
+      if (!user) throw new Error(JSON.stringify({
+        type: "ID",
+        message: "A User by that ID was not found!",
+      }))
 
       await user.posts.forEach(async post => {
         await post.comments.forEach(async comment => {
