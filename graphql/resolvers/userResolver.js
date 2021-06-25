@@ -1,5 +1,7 @@
 const bcrypt = require("bcryptjs")
 const moment = require("moment")
+const nodemailer = require('nodemailer')
+const generator = require('generate-password')
 
 const User = require("../../models/user")
 const Post = require("../../models/post")
@@ -13,7 +15,7 @@ const {
 module.exports = {
   createUser: async args => {
     try {
-      const {name, email, password, pass_confirm} = args.userInput
+      const { name, email, password, pass_confirm } = args.userInput
 
       if (!name) {
         throw new Error(JSON.stringify({
@@ -90,7 +92,7 @@ module.exports = {
       throw err
     }
   },
-  login: async ({email, password}) => {
+  login: async ({ email, password }) => {
     try {
       const user = await User.findOne({email}).populate(userPopulationObj)
       if (!user) throw new Error(JSON.stringify({
@@ -122,7 +124,7 @@ module.exports = {
       throw err
     }
   },
-  user: async ({_id}, req) => {
+  user: async ({ _id }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -139,13 +141,58 @@ module.exports = {
       throw err
     }
   },
-  forgot: async ({email}) => {
+  forgot: async ({ email }) => {
     try {
       const user = await User.findOne({email}).populate(userPopulationObj)
       if (!user) throw new Error(JSON.stringify({
         type: "email",
         message: "An account by that email was not found!",
       }))
+
+      const randomPass = generator.generate({
+        length: 10,
+        numbers: true,
+      })
+
+      const transport = {
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+          user: process.env.NODEMAILER_EMAIL,
+          pass: process.env.NODEMAILER_PASS,
+        }
+      }
+      
+      const transporter = nodemailer.createTransport(transport)
+      transporter.verify((err, res) => {
+        if (err) throw new Error("Could not verify Nodemailer transporter")
+      })
+      
+      const mail = {
+        from: process.env.NODEMAILER_EMAIL,
+        to: email,
+        subject: "Track-Runner Password Reset",
+        text: `
+        From:
+        Track-Runner
+    
+        Message: 
+        Your password has is now ${randomPass}. 
+        If you did not expect this email contact maxcrosby118@gmail.com immediately.
+        `
+      }
+
+      user.password = await bcrypt.hash(randomPass, 12)
+      user.save()
+
+      transporter.sendMail(mail, (err, data) => {
+        if (err) {
+          throw new Error(err)
+        } else {
+          console.log(`Password Reset Email Sent to ${email}`)
+        }
+      })
 
       return {
         ...user._doc,
