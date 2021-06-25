@@ -82,6 +82,7 @@ module.exports = {
       )
   
       await user.save()
+      console.log(`${name} created an account.`)
 
       return {
         ...user._doc,
@@ -114,6 +115,7 @@ module.exports = {
 
       user.logged_in_at = moment().format()
       await user.save()
+      console.log(`${email} logged in.`)
 
       return {
         ...user._doc,
@@ -190,7 +192,7 @@ module.exports = {
         if (err) {
           throw new Error(err)
         } else {
-          console.log(`Password Reset Email Sent to ${email}`)
+          console.log(`${email} forgot email sent.`)
         }
       })
 
@@ -222,6 +224,8 @@ module.exports = {
       await User.deleteOne({ _id: req._id })
 
       // await emptyS3Directory(process.env.AWS_BUCKET, `${req._id}/`)
+
+      console.log(`${user.email} deleted their account!`)
 
       return {
         ...user._doc,
