@@ -82,7 +82,7 @@ module.exports = {
       )
   
       await user.save()
-      console.log(`${name} created an account.`)
+      console.log(`${email} created an account.`)
 
       return {
         ...user._doc,
@@ -186,7 +186,8 @@ module.exports = {
       }
 
       user.password = await bcrypt.hash(randomPass, 12)
-      user.save()
+      user.updated_at = moment().format()
+      await user.save()
 
       transporter.sendMail(mail, (err, data) => {
         if (err) {
