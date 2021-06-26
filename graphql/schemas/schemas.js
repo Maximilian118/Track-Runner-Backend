@@ -1,11 +1,13 @@
 const { buildSchema } = require("graphql")
 const userSchema = require("./userSchema")
 const postSchema = require("./postSchema")
+const eventSchema = require("./eventSchema")
 const commentSchema = require("./commentSchema")
 
 module.exports = buildSchema(`
   ${userSchema}
   ${postSchema}
+  ${eventSchema}
   ${commentSchema}
 
   type rootQuery {

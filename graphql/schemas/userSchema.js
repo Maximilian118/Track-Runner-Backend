@@ -8,7 +8,7 @@ module.exports = authSchema = `
     profile_picture: String!
     posts: [Post]!
     following: [User]!
-    calendar: [Post]!
+    events: [Event]!
     logged_in_at: String!
     created_at: String!
     updated_at: String!

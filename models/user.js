@@ -4,7 +4,7 @@ const moment = require('moment')
 const userSchema = new mongoose.Schema({
 	posts: [{ type: mongoose.Schema.ObjectId, ref: 'Post' }],
 	following: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-	events: { type: Array, default: [] },
+	events: [{ type: mongoose.Schema.ObjectId, ref: 'Event' }],
 	logged_in_at: { type: String, default: null },
 	created_at: { type: String, default: moment().format() },
 	updated_at: { type: String, default: moment().format() },
