@@ -76,6 +76,7 @@ module.exports = {
       return {
         ...newTrack._doc,
         geojson: newGeojson._doc,
+        tokens: req.tokens,
       }
     } catch (err) {
       throw err
@@ -96,7 +97,10 @@ module.exports = {
 
       if (!track) throw new Error("A track was not found!")
 
-      return track._doc
+      return {
+        ...track._doc,
+        tokens: req.tokens,
+      }
     } catch (err) {
       throw err
     }

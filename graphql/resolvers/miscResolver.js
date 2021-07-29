@@ -57,7 +57,10 @@ module.exports = {
         console.log(`New championship: ${champName}!!!`)
       }
 
-      return JSON.stringify(championshipArr)
+      return {
+        rounds: JSON.stringify(championshipArr),
+        tokens: req.tokens,
+      }
     } catch (err) {
       throw err
     }
@@ -72,7 +75,10 @@ module.exports = {
 
       const sortedChamp = champ.sort((a, b) => (a.round > b.round) ? 1 : -1)
       
-      return JSON.stringify(sortedChamp)
+      return {
+        rounds: JSON.stringify(sortedChamp),
+        tokens: req.tokens,
+      }
     } catch (err) {
       throw err
     }
@@ -106,7 +112,10 @@ module.exports = {
         })
       }
 
-      return JSON.stringify(sortedCal)
+      return {
+        rounds: JSON.stringify(sortedCal),
+        tokens: req.tokens,
+      }
     } catch (err) {
       throw err
     }

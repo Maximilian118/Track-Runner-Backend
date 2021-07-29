@@ -1,7 +1,6 @@
 module.exports = authSchema = `
   type User {
     _id: ID!
-    tokens: String!
     refresh_count: Int!
     posts: [Post]!
     tracks: [Track]!
@@ -18,6 +17,7 @@ module.exports = authSchema = `
     created_at: String!
     updated_at: String!
     password: String
+    tokens: String!
   }
 
   input userInput {

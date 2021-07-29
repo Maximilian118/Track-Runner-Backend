@@ -7,6 +7,7 @@ module.exports = geojsonSchema = `
     geojson: String!
     created_at: String!
     updated_at: String!
+    tokens: String
   }
 
   input geojsonInput {

@@ -19,6 +19,7 @@ module.exports = async (req, res, next) => {
 
 	try {
 		const verifiedToken = jwt.verify(accessToken, `${process.env.ACCESS_TOKEN_SECRET}`)
+		req.tokens = null
 		req.isAuth = true
 		req._id = verifiedToken._id
 		return next()

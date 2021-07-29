@@ -10,6 +10,7 @@ module.exports = eventSchema = `
     img: String
     likes: Int!
     participants: [User]!
+    tokens: String
   }
 
   input eventInput {

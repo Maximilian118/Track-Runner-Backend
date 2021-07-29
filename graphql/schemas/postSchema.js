@@ -2,7 +2,6 @@ module.exports = postSchema = `
   type Post {
     _id: ID!
     user: User!
-    tokens: String!
     title: String!
     description: String!
     img: String!
@@ -10,6 +9,7 @@ module.exports = postSchema = `
     created_at: String!
     updated_at: String!
     comments: [Comment!]!
+    tokens: String
   }
 
   input postInput {
