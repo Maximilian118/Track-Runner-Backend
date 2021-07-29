@@ -10,7 +10,7 @@ const s3 = new aws.S3({
   region: 'eu-west-2',
 })
 
-// Population object for a user.
+// Population object for a User.
 const userPopulationObj = [
   {
     path: 'posts',
@@ -35,6 +35,58 @@ const userPopulationObj = [
         },
       ],
     },
+  },
+  {
+    path: 'tracks',
+    model: 'Track',
+    populate: [
+      {
+        path: 'geojson',
+        model: 'Geojson',
+      },
+    ],
+  },
+  {
+    path: 'geojsons',
+    model: 'Geojson',
+  },
+]
+
+// Population object for a Track.
+const trackPopulationObj = [
+  {
+    path: 'geojson',
+    model: 'Geojson',
+  },
+  {
+    path: 'user',
+    model: 'User',
+  },
+  {
+    path: 'post',
+    model: 'Post',
+  },
+]
+
+// Population object for a Round.
+const roundPopulationObj = [
+  {
+    path: 'track',
+    model: 'Track',
+    populate: [
+      {
+        path: 'geojson',
+        model: 'Geojson',
+      },
+      {
+        path: 'user',
+        model: 'User',
+      },
+      {
+        path: 'post',
+        model: 'Post',
+      },
+    ]
   },
 ]
 
@@ -146,6 +198,8 @@ const signTokens = user => {
 }
 
 exports.userPopulationObj = userPopulationObj
+exports.trackPopulationObj = trackPopulationObj
+exports.roundPopulationObj = roundPopulationObj
 exports.emptyS3Directory = emptyS3Directory
 exports.redundantFilesCheck = redundantFilesCheck
 exports.signTokens = signTokens

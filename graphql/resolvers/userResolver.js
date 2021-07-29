@@ -71,6 +71,8 @@ module.exports = {
         {
           name,
           email,
+          calendars: ["F1"],
+          champsCreated: [],
           password: await bcrypt.hash(password, 12),
           created_at: moment().format(),
           updated_at: moment().format(),

@@ -1,23 +1,24 @@
 module.exports = eventSchema = `
   type Event {
     _id: ID!
+    user: ID!
     title: String!
-    description: String!
+    description: String
     location: String!
     startDate: String!
     endDate: String!
-    img: String!
-    participants: User!
-    created_at: String!
-    updated_at: String!
+    img: String
+    likes: Int!
+    participants: [User]!
   }
 
   input eventInput {
+    user_id: ID!
     title: String!
-    description: String!
+    description: String
     location: String!
     startDate: String!
     endDate: String!
-    img: String!
+    img: String
   }
 `

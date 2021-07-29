@@ -1,10 +1,11 @@
 module.exports = commentSchema = `
   type Comment {
     _id: ID!
-    tokens: String!
+    user: User!
     post: Post!
+    tokens: String!
     comment: String!
-    author: User!
+    likes: Int!
     created_at: String!
     updated_at: String!
   }
