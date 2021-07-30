@@ -84,7 +84,7 @@ module.exports = {
     }
   },
   calendar: async ({calendar, calScope}, req) => {
-    if (!req.isAuth) {
+    if (!req.isAuth && calendar !== "F1") {
       throw new Error("Not Authenticated!")
     }
     try {
