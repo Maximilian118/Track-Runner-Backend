@@ -8,6 +8,7 @@ const {
   userPopulationObj,
   roundPopulationObj,
   isDuplicateProfilePicture,
+  redundantFilesCheck,
 } = require("../../shared/utility")
 
 const s3 = new aws.S3({
@@ -157,6 +158,24 @@ module.exports = {
       return {
         signedRequest,
         url,
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  redundantFilesCheck: async ({}, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findById(req._id)
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      await redundantFilesCheck(req._id)
+
+      return {
+        ...user._doc,
         tokens: req.tokens,
       }
     } catch (err) {

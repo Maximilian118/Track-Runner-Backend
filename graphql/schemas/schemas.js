@@ -24,6 +24,7 @@ module.exports = buildSchema(`
     championship(championship: String!): Rounds!
     calendar(calendar: String!, calScope: Int): Rounds!
     signS3(filename: String!, filetype: String!): S3Payload!
+    redundantFilesCheck: User!
   }
 
   type rootMutation {
