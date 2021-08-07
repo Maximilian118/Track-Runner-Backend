@@ -10,6 +10,7 @@ const {
   userPopulationObj,
   emptyS3Directory,
   signTokens,
+  isDuplicateProfilePicture,
 } = require('../../shared/utility')
 
 module.exports = {
@@ -133,7 +134,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({_id}).populate(userPopulationObj)
+      const user = await User.findById(_id).populate(userPopulationObj)
       if (!user) throw new Error("A User by that ID was not found!")
 
       return {
@@ -232,6 +233,29 @@ module.exports = {
 
       return {
         ...user._doc,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  updateProfilePicture: async ({ _id, url }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findById(_id).populate(userPopulationObj)
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      if (isDuplicateProfilePicture(user, url)) throw new Error("Duplicate Profile Picture!")
+
+      user.profile_picture = url
+      user.updated_at = moment().format()
+      await user.save()
+
+      return {
+        ...user._doc,
+        tokens: req.tokens,
+        password: null,
       }
     } catch (err) {
       throw err

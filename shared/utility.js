@@ -90,6 +90,18 @@ const roundPopulationObj = [
   },
 ]
 
+// Check if the Users current profile picture is the same as the passed filename.
+const isDuplicateProfilePicture = (user, filename) => {
+  const currentFile = user.profile_picture.substring(user.profile_picture.lastIndexOf("/") + 1)
+  const newFile = filename.substring(filename.lastIndexOf("/") + 1)
+
+  if (currentFile === newFile) {
+    return true
+  } else {
+    return false
+  }
+}
+
 // Completely empties an AWS s3 directory.
 const emptyS3Directory = async (bucket, dir) => {
   const listParams = {
@@ -197,6 +209,7 @@ const signTokens = user => {
   }
 }
 
+exports.isDuplicateProfilePicture = isDuplicateProfilePicture
 exports.userPopulationObj = userPopulationObj
 exports.trackPopulationObj = trackPopulationObj
 exports.roundPopulationObj = roundPopulationObj

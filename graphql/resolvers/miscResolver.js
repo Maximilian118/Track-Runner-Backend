@@ -1,4 +1,5 @@
 const moment = require("moment")
+const aws = require("aws-sdk")
 
 const User = require("../../models/user")
 const Round = require("../../models/round")
@@ -6,7 +7,15 @@ const Round = require("../../models/round")
 const { 
   userPopulationObj,
   roundPopulationObj,
+  isDuplicateProfilePicture,
 } = require("../../shared/utility")
+
+const s3 = new aws.S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  signatureVersion: 'v4',
+  region: 'eu-west-2',
+})
 
 module.exports = {
   createChampionship: async (args, req) => {
@@ -114,6 +123,40 @@ module.exports = {
 
       return {
         rounds: JSON.stringify(sortedCal),
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  signS3: async ({ filename, filetype }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const _id = await filename.substring(0, filename.indexOf("/"))
+
+      const user = await User.findById(_id)
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      if (filename.includes("profile-picture")) {
+        if (isDuplicateProfilePicture(user, filename)) throw new Error("Duplicate Profile Picture!")
+      }
+
+      const s3Params = {
+        Bucket: process.env.AWS_BUCKET,
+        Key: filename,
+        Expires: 60,
+        ContentType: filetype,
+        ACL: 'public-read',
+      }
+
+      const signedRequest = s3.getSignedUrl('putObject', s3Params)
+      const url = `http://${process.env.AWS_BUCKET}.s3.eu-west-2.amazonaws.com/${filename}`
+
+      return {
+        signedRequest,
+        url,
         tokens: req.tokens,
       }
     } catch (err) {

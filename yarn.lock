@@ -103,10 +103,10 @@
   "resolved" "https://registry.npmjs.org/arrify/-/arrify-2.0.1.tgz"
   "version" "2.0.1"
 
-"aws-sdk@^2.934.0":
-  "integrity" "sha512-k7p08ewrKcbs0ikCLFi9OI98Iv9dMND5244xPxUIjK5BLtuT/9Gr6eSCHfN70eCQyM5Y2xG1VJP6zhpkihu9Ew=="
-  "resolved" "https://registry.npmjs.org/aws-sdk/-/aws-sdk-2.934.0.tgz"
-  "version" "2.934.0"
+"aws-sdk@^2.962.0":
+  "integrity" "sha512-uY87X0bQ0tFjxt/AxJM9gZDxNzz8hD7uJG4azw7fgZibBqG2eYMAw2ythkQB/B8kLPenm/jr5+FsIG28qaC63Q=="
+  "resolved" "https://registry.npmjs.org/aws-sdk/-/aws-sdk-2.962.0.tgz"
+  "version" "2.962.0"
   dependencies:
     "buffer" "4.9.2"
     "events" "1.1.1"

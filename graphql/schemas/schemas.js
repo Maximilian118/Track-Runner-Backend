@@ -23,6 +23,7 @@ module.exports = buildSchema(`
     track(user_id: ID, post_id: ID, track_id: ID, name: String): Track!
     championship(championship: String!): Rounds!
     calendar(calendar: String!, calScope: Int): Rounds!
+    signS3(filename: String!, filetype: String!): S3Payload!
   }
 
   type rootMutation {
@@ -31,6 +32,7 @@ module.exports = buildSchema(`
     forgot(email: String!): User!
     createTrack(trackInput: trackInput): Track!
     createChampionship(champInput: champInput): Rounds!
+    updateProfilePicture(_id: ID!, url: String!): User!
   }
 
   schema {
