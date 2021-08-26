@@ -216,16 +216,46 @@ const initRoundsArr = roundsArr => {
 
   roundsArr.forEach(item => {
     if (item.round) {
+      const stats = JSON.parse(item.track._doc.stats)
       let maxElev = null
       let minElev = null
       let elevation = null
       let elevArr = []
+      let trackStatsArr = [
+        {
+          name: "Round",
+          stat: item.round,
+        },
+        {
+          name: "Turns",
+          stat: stats.turns,
+        },
+        {
+          name: "Distance",
+          stat: stats.distance,
+        },
+      ]
 
       if (item.track.geojson) {
         elevArr = JSON.parse(item.track.geojson.geojson).features[0].geometry.coordinates.map(coords => coords[2])
         maxElev = Math.max(...elevArr)
         minElev = Math.min(...elevArr)
         elevation = maxElev - minElev
+        trackStatsArr = [
+          ...trackStatsArr,
+          {
+            name: "MaxElev",
+            stat: maxElev,
+          },
+          {
+            name: "MinElev",
+            stat: minElev,
+          },
+          {
+            name: "ElevChange",
+            stat: elevation,
+          },
+        ]
       }
 
       withData.push({
@@ -233,8 +263,9 @@ const initRoundsArr = roundsArr => {
         track: {
           ...item.track._doc,
           elevArr,
+          trackStatsArr,
           stats: {
-            ...JSON.parse(item.track._doc.stats),
+            ...stats,
             maxElev,
             minElev,
             elevation,
