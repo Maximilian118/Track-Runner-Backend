@@ -185,6 +185,7 @@ const redundantFilesCheck = async _id => {
   }).promise()
 }
 
+// Sign Tokens with JWT.
 const signTokens = user => {
   const access_token = jwt.sign(
     { 
@@ -209,6 +210,45 @@ const signTokens = user => {
   }
 }
 
+// initialise Rounds with more data based on passed roundsArr.
+const initRoundsArr = roundsArr => {
+  let withData = []
+
+  roundsArr.forEach(item => {
+    if (item.round) {
+      let maxElev = null
+      let minElev = null
+      let elevation = null
+      let elevArr = []
+
+      if (item.track.geojson) {
+        elevArr = JSON.parse(item.track.geojson.geojson).features[0].geometry.coordinates.map(coords => coords[2])
+        maxElev = Math.max(...elevArr)
+        minElev = Math.min(...elevArr)
+        elevation = maxElev - minElev
+      }
+
+      withData.push({
+        ...item,
+        track: {
+          ...item.track._doc,
+          elevArr,
+          stats: {
+            ...JSON.parse(item.track._doc.stats),
+            maxElev,
+            minElev,
+            elevation,
+          },
+        }
+      })
+    } else {
+      withData.push(item)
+    }
+  })
+
+  return withData
+}
+
 exports.isDuplicateProfilePicture = isDuplicateProfilePicture
 exports.userPopulationObj = userPopulationObj
 exports.trackPopulationObj = trackPopulationObj
@@ -216,3 +256,4 @@ exports.roundPopulationObj = roundPopulationObj
 exports.emptyS3Directory = emptyS3Directory
 exports.redundantFilesCheck = redundantFilesCheck
 exports.signTokens = signTokens
+exports.initRoundsArr = initRoundsArr

@@ -9,6 +9,7 @@ const {
   roundPopulationObj,
   isDuplicateProfilePicture,
   redundantFilesCheck,
+  initRoundsArr,
 } = require("../../shared/utility")
 
 const s3 = new aws.S3({
@@ -123,7 +124,7 @@ module.exports = {
       }
 
       return {
-        rounds: JSON.stringify(sortedCal),
+        rounds: JSON.stringify(initRoundsArr(sortedCal)),
         tokens: req.tokens,
       }
     } catch (err) {
