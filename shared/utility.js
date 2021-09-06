@@ -258,22 +258,22 @@ const trackStatsArr = (round, trackStats, geoStats) => {
     },
     {
       name: "Distance",
-      stat: trackStats.distance,
+      stat: `${trackStats.distance}km`,
     },
   )
 
   geoStats && statArr.push(
     {
       name: "MaxElev",
-      stat: geoStats.elevation.max,
+      stat: `${geoStats.elevation.max}m`,
     },
     {
       name: "MinElev",
-      stat: geoStats.elevation.min,
+      stat: `${geoStats.elevation.min}m`,
     },
     {
       name: "ElevChange",
-      stat: geoStats.elevation.dif,
+      stat: `${geoStats.elevation.dif}m`,
     },
   )
 
