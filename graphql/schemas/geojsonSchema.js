@@ -5,6 +5,7 @@ module.exports = geojsonSchema = `
     post: ID
     name: String!
     geojson: String!
+    stats: String
     created_at: String!
     updated_at: String!
     tokens: String

@@ -7,8 +7,9 @@ module.exports = authSchema = `
     geojsons: [Geojson]!
     following: [User]!
     events: [Event]!
+    rounds: [Round]!
     calendars: [String]!
-    champsCreated: [String]!
+    championships: [String]!
     name: String!
     email: String!
     profile_picture: String!

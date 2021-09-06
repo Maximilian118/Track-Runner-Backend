@@ -8,6 +8,7 @@ const Geojson = require("../../models/geojson")
 const { 
   userPopulationObj,
   trackPopulationObj,
+  GPXtoGeojson,
 } = require("../../shared/utility")
 
 module.exports = {
@@ -16,7 +17,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const { user_id, post_id, name, country, location, logo, geojson, stats } = args.trackInput
+      const { user_id, post_id, name, country, location, logo, gpx, stats } = args.trackInput
 
       const user = await User.findById(user_id).populate(userPopulationObj)
       if (user_id && !user) throw new Error("A User by that ID was not found!")
@@ -27,17 +28,27 @@ module.exports = {
       const trackTest = await Track.findOne({name})
       if (trackTest) throw new Error("A Track by that name already exists!")
 
-      const newGeojson = geojson ? new Geojson(
-        {
-          user: user ? user._id : null,
-          post: post ? post._id : null,
-          name,
-          geojson,
-        },
-        err => {
-          if (err) throw new Error(err)
-        }
-      ) : null
+      let newGeojson = null
+
+      if (gpx) {
+        const geoData = GPXtoGeojson(gpx)
+        newGeojson = new Geojson(
+          {
+            user: user ? user._id : null,
+            post: post ? post._id : null,
+            name,
+            geojson: JSON.stringify(geoData.geojson),
+            stats: JSON.stringify({
+              distance: geoData.distance,
+              elevation: geoData.elevation,
+              slopes: geoData.slopes,
+            }),
+          },
+          err => {
+            if (err) throw new Error(err)
+          }
+        ) 
+      }
 
       const newTrack = new Track(
         {
@@ -75,7 +86,7 @@ module.exports = {
 
       return {
         ...newTrack._doc,
-        geojson: newGeojson._doc,
+        geojson: newGeojson ? newGeojson._doc : null,
         tokens: req.tokens,
       }
     } catch (err) {

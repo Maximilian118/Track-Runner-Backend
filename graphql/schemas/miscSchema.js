@@ -5,9 +5,28 @@ module.exports = miscSchema = `
     tokens: String,
   }
 
-  type Rounds {
-    rounds: String!
+  type Round {
+    _id: ID!
+    user: ID
+    calendars: [String!]!
+    year: Int!
+    championship: String!
+    round: Int!
+    track: ID!
+    confirmed: Boolean!
+    from: String!
+    to: String!
+    sessions: String!
+    likes: Int!
+    created_at: String!
+    updated_at: String!
+    rounds: String
     tokens: String
+  }
+
+  input roundInput {
+    user_id: ID
+    roundObj: String!
   }
 
   input champInput {

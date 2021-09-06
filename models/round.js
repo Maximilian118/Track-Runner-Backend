@@ -7,7 +7,7 @@ const roundSchema = new mongoose.Schema({
   year: { type: Number, required: true }, // The year of the championship.
   championship: { type: String, required: true }, // The championship this Round is in.
   round: { type: Number, required: true }, // What round is this Round in the championship?
-  track: { type: mongoose.Schema.ObjectId, required: true }, // The Track the relates to this Round.
+  track: { type: mongoose.Schema.ObjectId, required: false }, // The Track the relates to this Round.
   confirmed: { type: Boolean, required: true }, // Is this Round confirmed?
   from: { type: String, required: true }, // What date does this Round start?
   to: { type: String, required: true }, // What date does this round end?

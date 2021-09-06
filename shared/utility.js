@@ -1,7 +1,8 @@
-const User = require("../models/user")
-
 const jwt = require("jsonwebtoken")
 const aws = require("aws-sdk")
+const gpxParser = require('gpxparser')
+
+const User = require("../models/user")
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -210,70 +211,100 @@ const signTokens = user => {
   }
 }
 
-// initialise Rounds with more data based on passed roundsArr.
-const initRoundsArr = roundsArr => {
+// Convert a stringified GPX file to geojson and generate data.
+const GPXtoGeojson = gpxString => {
+  const gpx = new gpxParser()
+  gpx.parse(gpxString)
+
+  const slopes = []
+  gpx.tracks[0].slopes.forEach(slope => {
+    if (!isNaN(slope)) {
+      slopes.push(Number(slope.toFixed(2)))
+    }
+  })
+
+  return {
+    geojson: gpx.toGeoJSON(),
+    distance: {
+      ...gpx.tracks[0].distance,
+      total: Number(gpx.tracks[0].distance.total.toFixed(2)),
+      cumul: gpx.tracks[0].distance.cumul.map(dist => Number(dist.toFixed(2))),
+    },
+    elevation: {
+      ...gpx.tracks[0].elevation,
+      pos: Number(gpx.tracks[0].elevation.pos.toFixed(2)),
+      neg: Number(gpx.tracks[0].elevation.neg.toFixed(2)),
+      avg: Number(gpx.tracks[0].elevation.avg.toFixed(2)),
+      dif: Number(Math.abs(gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min).toFixed(2)),
+      elevArr: gpx.tracks[0].points.map(point => Number(point.ele.toFixed(2))),
+    },
+    slopes,
+  }
+}
+
+// Return an array of stats depending on what data is available.
+const trackStatsArr = (round, trackStats, geoStats) => {
+  let statArr = [
+    {
+      name: "Round",
+      stat: round.round,
+    },
+  ]
+
+  trackStats && statArr.push(
+    {
+      name: "Turns",
+      stat: trackStats.turns,
+    },
+    {
+      name: "Distance",
+      stat: trackStats.distance,
+    },
+  )
+
+  geoStats && statArr.push(
+    {
+      name: "MaxElev",
+      stat: geoStats.elevation.max,
+    },
+    {
+      name: "MinElev",
+      stat: geoStats.elevation.min,
+    },
+    {
+      name: "ElevChange",
+      stat: geoStats.elevation.dif,
+    },
+  )
+
+  return statArr
+}
+
+// Return an array of rounds with supplementary data.
+const roundData = rounds => {
   let withData = []
 
-  roundsArr.forEach(item => {
-    if (item.round) {
-      const stats = JSON.parse(item.track._doc.stats)
-      let maxElev = null
-      let minElev = null
-      let elevation = null
-      let elevArr = []
-      let trackStatsArr = [
-        {
-          name: "Round",
-          stat: item.round,
-        },
-        {
-          name: "Turns",
-          stat: stats.turns,
-        },
-        {
-          name: "Distance",
-          stat: stats.distance,
-        },
-      ]
+  rounds.forEach(round => {
+    if (round.round) {
+      let trackStats = null
+      let geoStats = null
 
-      if (item.track.geojson) {
-        elevArr = JSON.parse(item.track.geojson.geojson).features[0].geometry.coordinates.map(coords => coords[2])
-        maxElev = Math.max(...elevArr)
-        minElev = Math.min(...elevArr)
-        elevation = maxElev - minElev
-        trackStatsArr = [
-          ...trackStatsArr,
-          {
-            name: "MaxElev",
-            stat: maxElev,
-          },
-          {
-            name: "MinElev",
-            stat: minElev,
-          },
-          {
-            name: "ElevChange",
-            stat: elevation,
-          },
-        ]
+      if (round.track) {
+        trackStats = JSON.parse(round.track.stats)
+        if (round.track.geojson) {
+          geoStats = JSON.parse(round.track.geojson.stats)
+        }
       }
 
       withData.push({
-        ...item,
-        track: {
-          ...item.track._doc,
-          elevArr,
-          trackStatsArr,
-          stats: {
-            ...stats,
-            maxElev,
-            minElev,
-            elevation,
-          },
-        }
+        ...round,
+        track: round.track? {
+          ...round.track._doc,
+          trackStatsArr: trackStatsArr(round, trackStats, geoStats)
+        } : null
       })
     } else {
-      withData.push(item)
+      withData.push(round)
     }
   })
 
@@ -287,4 +318,5 @@ exports.roundPopulationObj = roundPopulationObj
 exports.emptyS3Directory = emptyS3Directory
 exports.redundantFilesCheck = redundantFilesCheck
 exports.signTokens = signTokens
-exports.initRoundsArr = initRoundsArr
+exports.GPXtoGeojson = GPXtoGeojson
+exports.roundData = roundData

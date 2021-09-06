@@ -7,8 +7,9 @@ const userSchema = new mongoose.Schema({
 	geojsons: [{ type: mongoose.Schema.ObjectId, ref: 'Geojson' }], // Array of geojsons the User has created.
 	following: [{ type: mongoose.Schema.ObjectId, ref: 'User' }], // Array of Users the User is following.
 	events: [{ type: mongoose.Schema.ObjectId, ref: 'Event' }], // Array of Events the User has created or is participating in.
-	calendars: [{ type: String }], // Calendars the User wishes to be displayed.
-	champsCreated: [{ type: String }], // Championships the User has created.
+	rounds: [{ type: mongoose.Schema.ObjectId, ref: 'Round' }], // Array of Rounds the user has created.
+	calendars: [{ type: String }], // Array of Calendars the User wishes to be displayed.
+	championships: [{ type: String }], // Array of Championships the User has created.
 	name: { type: String, required: true }, // User Name.
 	email: { type: String, required: true }, // User Email.
 	profile_picture: { type: String, required: false, default: "" }, // User Profile Picture.

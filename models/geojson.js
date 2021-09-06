@@ -7,6 +7,7 @@ const geojsonSchema = new mongoose.Schema({
   name: { type: String, required: true }, // The name of the Track.
   track: { type: mongoose.Schema.ObjectId, required: false }, // The Track associated with this Geojson.
   geojson: { type: String, required: true }, // The stingified Geojson.
+  stats: { type: String, required: false }, // Geojson stats.
   created_at: { type: String, default: moment().format() }, // When the Geojson was created.
   updated_at: { type: String, default: moment().format() }, // The last time the Geojson was mutated.
 })

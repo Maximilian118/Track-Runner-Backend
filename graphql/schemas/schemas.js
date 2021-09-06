@@ -21,8 +21,8 @@ module.exports = buildSchema(`
     user(_id: ID!): User! 
     login(email: String!, password: String): User!
     track(user_id: ID, post_id: ID, track_id: ID, name: String): Track!
-    championship(championship: String!): Rounds!
-    calendar(calendar: String!, calScope: Int): Rounds!
+    championship(championship: String!): Round!
+    calendar(calendar: String!, calScope: Int): Round!
     signS3(filename: String!, filetype: String!): S3Payload!
     redundantFilesCheck: User!
   }
@@ -30,9 +30,10 @@ module.exports = buildSchema(`
   type rootMutation {
     createUser(userInput: userInput): User!
     deleteUser(_id: String!): User!
-    forgot(email: String!): User!
+    createRound(roundInput: roundInput): Round!
     createTrack(trackInput: trackInput): Track!
-    createChampionship(champInput: champInput): Rounds!
+    createChampionship(champInput: champInput): Round!
+    forgot(email: String!): User!
     updateProfilePicture(_id: ID!, url: String!): User!
   }
 
