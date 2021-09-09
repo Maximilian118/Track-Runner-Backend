@@ -10,7 +10,7 @@ const {
   userPopulationObj,
   emptyS3Directory,
   signTokens,
-  isDuplicateProfilePicture,
+  isDuplicateFile,
 } = require('../../shared/utility')
 
 module.exports = {
@@ -246,7 +246,7 @@ module.exports = {
       const user = await User.findById(_id).populate(userPopulationObj)
       if (!user) throw new Error("A User by that ID was not found!")
 
-      if (isDuplicateProfilePicture(user, url)) throw new Error("Duplicate Profile Picture!")
+      if (isDuplicateFile(user.profile_picture, url)) throw new Error("Duplicate Profile Picture!")
 
       user.profile_picture = url
       user.updated_at = moment().format()

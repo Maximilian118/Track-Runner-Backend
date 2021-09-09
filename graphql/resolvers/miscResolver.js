@@ -9,7 +9,7 @@ const {
   userPopulationObj,
   trackPopulationObj,
   roundPopulationObj,
-  isDuplicateProfilePicture,
+  isDuplicateFile,
   redundantFilesCheck,
   roundData,
 } = require("../../shared/utility")
@@ -216,7 +216,7 @@ module.exports = {
       if (!user) throw new Error("A User by that ID was not found!")
 
       if (filename.includes("profile-picture")) {
-        if (isDuplicateProfilePicture(user, filename)) throw new Error("Duplicate Profile Picture!")
+        if (isDuplicateFile(user.profile_picture, filename)) throw new Error("Duplicate Profile Picture!")
       }
 
       const s3Params = {

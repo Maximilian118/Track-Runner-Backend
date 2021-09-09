@@ -91,12 +91,12 @@ const roundPopulationObj = [
   },
 ]
 
-// Check if the Users current profile picture is the same as the passed filename.
-const isDuplicateProfilePicture = (user, filename) => {
-  const currentFile = user.profile_picture.substring(user.profile_picture.lastIndexOf("/") + 1)
-  const newFile = filename.substring(filename.lastIndexOf("/") + 1)
+// Check for a duplicate filename by comparing the filename endpoints.
+const isDuplicateFile = (currentFile, newFile) => {
+  const currentF = currentFile.substring(currentFile.lastIndexOf("/") + 1)
+  const newF = newFile.substring(newFile.lastIndexOf("/") + 1)
 
-  if (currentFile === newFile) {
+  if (currentF === newF) {
     return true
   } else {
     return false
@@ -311,7 +311,7 @@ const roundData = rounds => {
   return withData
 }
 
-exports.isDuplicateProfilePicture = isDuplicateProfilePicture
+exports.isDuplicateFile = isDuplicateFile
 exports.userPopulationObj = userPopulationObj
 exports.trackPopulationObj = trackPopulationObj
 exports.roundPopulationObj = roundPopulationObj
