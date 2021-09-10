@@ -137,12 +137,13 @@ const wait = async (ms) => {
 
 // Check an AWS s3 _id for any files that aren't referenced in the db for that user.
 const redundantFilesCheck = async _id => {
-  await wait(3000) // wait 3s before continuing = ensure db has new file information.
+  await wait(3000) // Wait 3s before continuing. This helps ensure db has new file information.
 
   const user = await User.findOne({ _id: _id }).populate("posts")
   if (!user) throw new Error("A User by that ID was not found!")
 
   const currentPP = user.profile_picture.substring(user.profile_picture.indexOf("amazonaws.com/") + 14)
+  const currentIcon = user.icon.substring(user.icon.indexOf("amazonaws.com/") + 14)
   const currentPosts = user.posts.map(post => post.img.substring(post.img.indexOf("amazonaws.com/") + 14))
 
   await currentPP && s3.listObjectsV2 ({ // Itterate through the users profile-pictures directory in s3.
@@ -153,6 +154,22 @@ const redundantFilesCheck = async _id => {
     err && console.log(err)
     data.Contents.forEach(async file => { // For each object in that directory,
       if (file.Key !== currentPP) { // check if the filename matches what's in the database.
+        await s3.deleteObject({ // If it's not in the database, remove that file from s3.
+          Bucket: process.env.AWS_BUCKET,
+          Key: file.Key,
+        }, err => err && console.log(err)).promise()
+      }
+    })
+  }).promise()
+
+  await currentIcon && s3.listObjectsV2 ({ // Itterate through the users profile-pictures directory in s3.
+    Bucket: process.env.AWS_BUCKET,
+    MaxKeys: 100,
+    Prefix: `${_id}/icon/`,
+  }, (err, data) => {
+    err && console.log(err)
+    data.Contents.forEach(async file => { // For each object in that directory,
+      if (file.Key !== currentIcon) { // check if the filename matches what's in the database.
         await s3.deleteObject({ // If it's not in the database, remove that file from s3.
           Bucket: process.env.AWS_BUCKET,
           Key: file.Key,
@@ -174,7 +191,8 @@ const redundantFilesCheck = async _id => {
         }
       }
 
-      if (file.Key.includes("profile-picture")) { // If the file is a Profile Picture, return.
+      // If the file is a Profile Picture or an Icon, return.
+      if (file.Key.includes("profile-picture") || file.Key.includes("icon")) {
         return
       }
 
