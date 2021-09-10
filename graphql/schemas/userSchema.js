@@ -12,6 +12,7 @@ module.exports = authSchema = `
     championships: [String]!
     name: String!
     email: String!
+    icon: String!
     profile_picture: String!
     likes: Int!
     logged_in_at: String!

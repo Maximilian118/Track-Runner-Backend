@@ -103,7 +103,7 @@ const isDuplicateFile = (currentFile, newFile) => {
   }
 }
 
-// Completely empties an AWS s3 directory.
+// Completely empty the s3 directory of a given user.
 const emptyS3Directory = async (bucket, dir) => {
   const listParams = {
     Bucket: bucket,

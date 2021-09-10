@@ -227,7 +227,7 @@ module.exports = {
 
       await User.deleteOne({ _id: req._id })
 
-      // await emptyS3Directory(process.env.AWS_BUCKET, `${req._id}/`)
+      await emptyS3Directory(process.env.AWS_BUCKET, `${req._id}/`)
 
       console.log(`${user.email} deleted their account!`)
 
@@ -238,7 +238,7 @@ module.exports = {
       throw err
     }
   },
-  updateProfilePicture: async ({ _id, url }, req) => {
+  updateProfilePicture: async ({ _id, profile_picture, icon }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -246,9 +246,11 @@ module.exports = {
       const user = await User.findById(_id).populate(userPopulationObj)
       if (!user) throw new Error("A User by that ID was not found!")
 
-      if (isDuplicateFile(user.profile_picture, url)) throw new Error("Duplicate Profile Picture!")
+      if (isDuplicateFile(user.icon, icon)) throw new Error("Duplicate Icon!")
+      if (isDuplicateFile(user.profile_picture, profile_picture)) throw new Error("Duplicate Profile Picture!")
 
-      user.profile_picture = url
+      user.icon = icon
+      user.profile_picture = profile_picture
       user.updated_at = moment().format()
       await user.save()
 

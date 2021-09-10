@@ -34,7 +34,7 @@ module.exports = buildSchema(`
     createTrack(trackInput: trackInput): Track!
     createChampionship(champInput: champInput): Round!
     forgot(email: String!): User!
-    updateProfilePicture(_id: ID!, url: String!): User!
+    updateProfilePicture(_id: ID!, profile_picture: String!, icon: String!): User!
   }
 
   schema {
