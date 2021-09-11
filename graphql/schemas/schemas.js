@@ -32,6 +32,7 @@ module.exports = buildSchema(`
     deleteUser(_id: String!): User!
     createRound(roundInput: roundInput): Round!
     createTrack(trackInput: trackInput): Track!
+    updateTrackLogo(track_id: ID, name: String, logo: String!): Track!
     createChampionship(champInput: champInput): Round!
     forgot(email: String!): User!
     updateProfilePicture(_id: ID!, profile_picture: String!, icon: String!): User!

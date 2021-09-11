@@ -210,13 +210,13 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const _id = await filename.substring(0, filename.indexOf("/"))
-
-      const user = await User.findById(_id)
+      const user = await User.findById(req._id)
       if (!user) throw new Error("A User by that ID was not found!")
 
       if (filename.includes("profile-picture")) {
         if (isDuplicateFile(user.profile_picture, filename)) throw new Error("Duplicate Profile Picture!")
+      } else if (filename.includes("icon")) {
+        if (isDuplicateFile(user.icon, filename)) throw new Error("Duplicate Icon!")
       }
 
       const s3Params = {

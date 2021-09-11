@@ -3,6 +3,7 @@ const aws = require("aws-sdk")
 const gpxParser = require('gpxparser')
 
 const User = require("../models/user")
+const Track = require("../models/track")
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -142,18 +143,20 @@ const redundantFilesCheck = async _id => {
   const user = await User.findOne({ _id: _id }).populate("posts")
   if (!user) throw new Error("A User by that ID was not found!")
 
-  const currentPP = user.profile_picture.substring(user.profile_picture.indexOf("amazonaws.com/") + 14)
-  const currentIcon = user.icon.substring(user.icon.indexOf("amazonaws.com/") + 14)
-  const currentPosts = user.posts.map(post => post.img.substring(post.img.indexOf("amazonaws.com/") + 14))
+  const tracks = await Track.find()
+  if (tracks.length === 0) throw new Error("No Tracks were found in the database.... PANIC!")
 
-  await currentPP && s3.listObjectsV2 ({ // Itterate through the users profile-pictures directory in s3.
+  const currentProfilePicture = user.profile_picture.substring(user.profile_picture.indexOf("amazonaws.com/") + 14)
+  const currentIcon = user.icon.substring(user.icon.indexOf("amazonaws.com/") + 14)
+
+  await currentProfilePicture && s3.listObjectsV2 ({ // Itterate through the users profile-pictures directory in s3.
     Bucket: process.env.AWS_BUCKET,
     MaxKeys: 100,
     Prefix: `${_id}/profile-picture/`,
   }, (err, data) => {
     err && console.log(err)
-    data.Contents.forEach(async file => { // For each object in that directory,
-      if (file.Key !== currentPP) { // check if the filename matches what's in the database.
+    data.Contents.forEach(async file => { // For each object in user_id/profile-picture/ directory,
+      if (file.Key !== currentProfilePicture) { // check if the filename matches what's in the database.
         await s3.deleteObject({ // If it's not in the database, remove that file from s3.
           Bucket: process.env.AWS_BUCKET,
           Key: file.Key,
@@ -168,7 +171,7 @@ const redundantFilesCheck = async _id => {
     Prefix: `${_id}/icon/`,
   }, (err, data) => {
     err && console.log(err)
-    data.Contents.forEach(async file => { // For each object in that directory,
+    data.Contents.forEach(async file => { // For each object in the user_id/icon/ directory,
       if (file.Key !== currentIcon) { // check if the filename matches what's in the database.
         await s3.deleteObject({ // If it's not in the database, remove that file from s3.
           Bucket: process.env.AWS_BUCKET,
@@ -178,15 +181,16 @@ const redundantFilesCheck = async _id => {
     })
   }).promise()
 
-  currentPosts.length > 0 && await s3.listObjectsV2 ({ // Itterate though the users directory in s3.
+  await tracks.length > 0 && s3.listObjectsV2 ({ // Itterate though the track-logo directory in s3.
     Bucket: process.env.AWS_BUCKET,
     MaxKeys: 100,
-    Prefix: `${_id}/`,
+    Prefix: `track-logo/`,
   }, (err, data) => {
     err && console.log(err)
-    data.Contents.forEach(async file => { // For each object in that directory,
-      for await (const postURL of currentPosts) { // itterate through all of the current posts the user has.
-        if (file.Key === postURL) { // If the filename matches the post filename, return. 
+    data.Contents.forEach(async file => { // For each object in the track-logo/ directory,
+      for await (const track of tracks) { // itterate through all of the track-logos.
+        const trackURL = track.logo.substring(user.icon.indexOf("amazonaws.com/") + 14)
+        if (file.Key === trackURL) { // If the filename matches the track filename, return. 
           return
         }
       }

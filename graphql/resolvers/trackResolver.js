@@ -9,6 +9,7 @@ const {
   userPopulationObj,
   trackPopulationObj,
   GPXtoGeojson,
+  isDuplicateFile,
 } = require("../../shared/utility")
 
 module.exports = {
@@ -107,6 +108,33 @@ module.exports = {
       }
 
       if (!track) throw new Error("A track was not found!")
+
+      return {
+        ...track._doc,
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  updateTrackLogo: async ({ track_id, name, logo }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      let track = null
+      
+      if (name) {
+        track = await Track.findOne({name}).populate(trackPopulationObj)
+      } else {
+        track = await Track.findById({ _id: track_id}).populate(trackPopulationObj)
+      }
+
+      if (!track) throw new Error("A track was not found!")
+
+      track.logo = logo
+      track.updated_at = moment().format()
+      track.save()
 
       return {
         ...track._doc,
