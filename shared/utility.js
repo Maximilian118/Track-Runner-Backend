@@ -189,7 +189,7 @@ const redundantFilesCheck = async _id => {
     err && console.log(err)
     data.Contents.forEach(async file => { // For each object in the track-logo/ directory,
       for await (const track of tracks) { // itterate through all of the track-logos.
-        const trackURL = track.logo.substring(user.icon.indexOf("amazonaws.com/") + 14)
+        const trackURL = track.logo.substring(track.logo.indexOf("amazonaws.com/") + 14)
         if (file.Key === trackURL) { // If the filename matches the track filename, return. 
           return
         }

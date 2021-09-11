@@ -103,15 +103,20 @@ module.exports = {
       
       if (name) {
         track = await Track.findOne({name}).populate(trackPopulationObj)
-      } else {
+      } else if (user_id || post_id || track_id) {
         track = await Track.findById({ user: user_id, post: post_id, _id: track_id}).populate(trackPopulationObj)
       }
 
-      if (!track) throw new Error("A track was not found!")
-
-      return {
-        ...track._doc,
-        tokens: req.tokens,
+      if (track) {
+        return {
+          ...track._doc,
+          tokens: req.tokens,
+        }
+      } else {
+        return {
+          tracks: track === null && JSON.stringify(await Track.find()),
+          tokens: req.tokens,
+        }
       }
     } catch (err) {
       throw err
