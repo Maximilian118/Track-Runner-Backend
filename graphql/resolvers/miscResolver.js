@@ -192,6 +192,7 @@ module.exports = {
   
         sortedCal.push({
           date: date,
+          dotw: moment(date).format("dddd"),
           events: [],
           ...roundData,
         })

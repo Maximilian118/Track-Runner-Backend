@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const aws = require("aws-sdk")
 const gpxParser = require('gpxparser')
+const moment = require("moment")
 
 const User = require("../models/user")
 const Track = require("../models/track")
@@ -302,6 +303,39 @@ const trackStatsArr = (round, trackStats, geoStats) => {
   return statArr
 }
 
+// Add day key to each round with a track. day++ for each day in a round.
+const withConsecDays = rounds => {
+  const withDays = []
+  let day = 0
+
+  rounds.forEach((round, i) => {
+    if (round.round) {
+      if (round.track) {        
+        if (moment().isBetween(round.from, round.to)) {
+          day = i + 1 + moment().diff(moment(round.from), 'd')
+        } else if (withDays[i - 1] && withDays[i - 1].round === round.round) {
+          day++
+        } else {
+          day = 1
+        }
+
+        withDays.push({
+          ...round,
+          day,
+        })
+      } else {
+        day = 0
+        withDays.push(round)
+      }
+    } else {
+      day = 0
+      withDays.push(round)
+    }
+  })
+
+  return withDays
+}
+
 // Return an array of rounds with supplementary data.
 const roundData = rounds => {
   let withData = []
@@ -330,7 +364,7 @@ const roundData = rounds => {
     }
   })
 
-  return withData
+  return withConsecDays(withData)
 }
 
 exports.isDuplicateFile = isDuplicateFile
