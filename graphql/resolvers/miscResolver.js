@@ -10,9 +10,10 @@ const {
   trackPopulationObj,
   roundPopulationObj,
   isDuplicateFile,
-  redundantFilesCheck,
   roundData,
 } = require("../../shared/utility")
+
+const { redundantFilesCheck } = require("../../shared/redundantFilesCheck")
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
