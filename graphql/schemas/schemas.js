@@ -36,6 +36,7 @@ module.exports = buildSchema(`
     createChampionship(champInput: champInput): Round!
     forgot(email: String!): User!
     updateProfilePicture(_id: ID!, profile_picture: String!, icon: String!): User!
+    createGeojson(gpx: String!, filename: String!): Geojson!
   }
 
   schema {

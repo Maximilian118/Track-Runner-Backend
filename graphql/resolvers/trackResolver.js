@@ -9,7 +9,6 @@ const {
   userPopulationObj,
   trackPopulationObj,
   GPXtoGeojson,
-  isDuplicateFile,
 } = require("../../shared/utility")
 
 module.exports = {
