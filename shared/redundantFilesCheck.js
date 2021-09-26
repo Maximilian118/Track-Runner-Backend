@@ -22,6 +22,11 @@ const wait = async (ms) => {
 // Check the db for any unused objects.
 // Also, check an AWS s3 user._id for any files that aren't referenced in the db for that user.
 const redundantFilesCheck = async _id => {
+  if (!navigator.onLine) {
+    console.log("redundantFilesCheck: No internet access.")
+    return
+  }
+
   await wait(3000) // Wait 3s before continuing. This helps ensure db has new file information.
 
   const user = await User.findOne({ _id: _id })
