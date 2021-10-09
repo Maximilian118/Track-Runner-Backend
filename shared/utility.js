@@ -10,10 +10,15 @@ const s3 = new aws.S3({
   region: 'eu-west-2',
 })
 
+// Get the endpoint of a url
+const endpoint = str => str.substring(str.lastIndexOf("/") + 1)
+const formatString = str => str.toLowerCase().replace(/[^a-z0-9]/g, "-")
+const getEndpoint = passed => endpoint(passed.type ? formatString(passed.name) : passed)
+
 // Check for a duplicate filename by comparing the filename endpoints.
 const isDuplicateFile = (currentFile, newFile) => {
-  const currentF = currentFile.substring(currentFile.lastIndexOf("/") + 1)
-  const newF = newFile.substring(newFile.lastIndexOf("/") + 1)
+  const currentF = endpoint(currentFile)
+  const newF = endpoint(newFile)
 
   if (currentF === newF) {
     return true
@@ -205,6 +210,9 @@ const roundData = rounds => {
   return withConsecDays(withData)
 }
 
+exports.endpoint = endpoint
+exports.formatString = formatString
+exports.getEndpoint = getEndpoint
 exports.isDuplicateFile = isDuplicateFile
 exports.emptyS3Directory = emptyS3Directory
 exports.signTokens = signTokens
