@@ -39,7 +39,6 @@ module.exports = {
       if (geojson) {
         const geo = await Geojson.findById(geojson)
         geo.post = post._id
-        user.geojsons.push(geo._id)
         await geo.save()
       }
 
