@@ -7,11 +7,12 @@ const User = require("../../models/user")
 const Post = require("../../models/post")
 
 const { 
-  userPopulationObj,
   emptyS3Directory,
   signTokens,
   isDuplicateFile,
 } = require('../../shared/utility')
+
+const { userPopulationObj } = require('../../shared/population')
 
 module.exports = {
   createUser: async args => {

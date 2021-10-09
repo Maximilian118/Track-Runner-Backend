@@ -3,7 +3,7 @@ const moment = require("moment")
 const User = require("../../models/user")
 const Post = require("../../models/post")
 
-const { postPopulationObj } = require("../../shared/utility")
+const { postPopulationObj } = require("../../shared/population")
 
 module.exports = {
   createPost: async (args, req) => {

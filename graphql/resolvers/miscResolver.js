@@ -6,12 +6,15 @@ const Track = require("../../models/track")
 const Round = require("../../models/round")
 
 const { 
-  userPopulationObj,
-  trackPopulationObj,
-  roundPopulationObj,
   isDuplicateFile,
   roundData,
 } = require("../../shared/utility")
+
+const {
+  userPopulationObj,
+  trackPopulationObj,
+  roundPopulationObj,
+} = require("../../shared/population")
 
 const { redundantFilesCheck } = require("../../shared/redundantFilesCheck")
 

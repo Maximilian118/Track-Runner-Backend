@@ -5,11 +5,12 @@ const Post = require("../../models/post")
 const Track = require ("../../models/track")
 const Geojson = require("../../models/geojson")
 
-const { 
+const { GPXtoGeojson } = require("../../shared/utility")
+
+const {
   userPopulationObj,
   trackPopulationObj,
-  GPXtoGeojson,
-} = require("../../shared/utility")
+} = require("../../shared/population")
 
 module.exports = {
   createTrack: async (args, req) => {
