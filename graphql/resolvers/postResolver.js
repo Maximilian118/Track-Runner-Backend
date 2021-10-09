@@ -2,6 +2,7 @@ const moment = require("moment")
 
 const User = require("../../models/user")
 const Post = require("../../models/post")
+const Geojson = require("../../models/geojson")
 
 const { postPopulationObj } = require("../../shared/population")
 
@@ -35,11 +36,18 @@ module.exports = {
 
       await post.save()
 
-      user.posts.push(post._doc._id)
+      if (geojson) {
+        const geo = await Geojson.findById(geojson)
+        geo.post = post._id
+        user.geojsons.push(geo._id)
+        await geo.save()
+      }
+
+      user.posts.push(post._id)
       user.updated_at = moment().format()
       await user.save()
 
-      const newPost = await Post.findById(post._doc._id).populate(postPopulationObj)
+      const newPost = await Post.findById(post._id).populate(postPopulationObj)
 
       return {
         ...newPost._doc,
