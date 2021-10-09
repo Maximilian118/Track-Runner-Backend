@@ -3,15 +3,15 @@ module.exports = postSchema = `
     _id: ID!
     user: User!
     title: String!
-    description: String!
-    track: Track!
-    geojson: Geojson!
+    description: String
+    track: Track
+    geojson: Geojson
     lap_time: String!
     distance: String!
     runDT: String!
-    imgs: [String!]!
+    imgs: [String!]
     likes: Int!
-    comments: [Comment!]!
+    comments: [Comment!]
     created_at: String!
     updated_at: String!
     tokens: String
