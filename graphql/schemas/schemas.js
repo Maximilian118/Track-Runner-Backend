@@ -30,6 +30,7 @@ module.exports = buildSchema(`
   type rootMutation {
     createUser(userInput: userInput): User!
     deleteUser(_id: String!): User!
+    createPost(postInput: postInput): Post!
     createRound(roundInput: roundInput): Round!
     createTrack(trackInput: trackInput): Track!
     updateTrackLogo(track_id: ID, name: String, logo: String!): Track!

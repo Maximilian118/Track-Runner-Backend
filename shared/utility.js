@@ -52,6 +52,22 @@ const userPopulationObj = [
   },
 ]
 
+// Population object for a Post.
+const postPopulationObj = [
+  {
+    path: 'user',
+    model: 'User',
+  },
+  {
+    path: 'track',
+    model: 'Track',
+  },
+  {
+    path: 'geojson',
+    model: 'Geojson',
+  },
+]
+
 // Population object for a Track.
 const trackPopulationObj = [
   {
@@ -287,6 +303,7 @@ const roundData = rounds => {
 
 exports.isDuplicateFile = isDuplicateFile
 exports.userPopulationObj = userPopulationObj
+exports.postPopulationObj = postPopulationObj
 exports.trackPopulationObj = trackPopulationObj
 exports.roundPopulationObj = roundPopulationObj
 exports.emptyS3Directory = emptyS3Directory

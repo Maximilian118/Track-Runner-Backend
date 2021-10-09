@@ -4,18 +4,27 @@ module.exports = postSchema = `
     user: User!
     title: String!
     description: String!
-    img: String!
+    track: Track!
+    geojson: Geojson!
+    lap_time: String!
+    distance: String!
+    runDT: String!
+    imgs: [String!]!
     likes: Int!
+    comments: [Comment!]!
     created_at: String!
     updated_at: String!
-    comments: [Comment!]!
     tokens: String
   }
 
   input postInput {
     title: String!
-    description: String!
-    img: String!
-    author: ID!
+    description: String
+    track: ID
+    geojson: ID
+    lapTime: String!
+    distance: String!
+    runDT: String!
+    imgs: String
   }
 `

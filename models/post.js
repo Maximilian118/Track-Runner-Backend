@@ -7,8 +7,9 @@ const postSchema = new mongoose.Schema({
   description: { type: String, required: false, default: "" }, // A description of the Post/run.
   track: { type: mongoose.Schema.ObjectId, required: false, default: null }, // A Track the relates to this Post. I.E. Which Track did the user run?
   geojson: { type: mongoose.Schema.ObjectId, required: false, default: null }, // A geojson of the run. Converted from a given GPX file.
-  lap_time: { type: Number, required: true }, // The fastest recorded lap time.
+  lap_time: { type: String, required: true }, // The fastest recorded lap time.
   distance: { type: Number, required: true }, // The total distance of the run. NOT the distance of one lap.
+  runDT: { type: String, required: true }, // The date and time of the activity.
   imgs: [{ type: String }], // An array of image url strings associated with the Post.
   likes: { type: Number, default: 0 }, // How many likes has this Post received?
   comments: [{ type: mongoose.Schema.ObjectId, ref: 'Comment' }], // An Array of comments for this Post.

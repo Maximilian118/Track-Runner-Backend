@@ -34,11 +34,11 @@ module.exports = {
         }
       )
 
-      geojson.save()
+      await geojson.save()
 
       user.geojsons.push(geojson._id)
       user.updated_at = moment().format()
-      user.save()
+      await user.save()
 
       return {
         ...geojson._doc,
