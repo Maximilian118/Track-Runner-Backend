@@ -12,6 +12,7 @@ const s3 = new aws.S3({
 
 // Get the endpoint of a url
 const endpoint = str => str.substring(str.lastIndexOf("/") + 1)
+const s3FileKey = str => str.substring(str.indexOf("amazonaws.com/") + 14)
 const formatString = str => str.toLowerCase().replace(/[^a-z0-9]/g, "-")
 const getEndpoint = passed => endpoint(passed.type ? formatString(passed.name) : passed)
 
@@ -211,6 +212,7 @@ const roundData = rounds => {
 }
 
 exports.endpoint = endpoint
+exports.s3FileKey = s3FileKey
 exports.formatString = formatString
 exports.getEndpoint = getEndpoint
 exports.isDuplicateFile = isDuplicateFile

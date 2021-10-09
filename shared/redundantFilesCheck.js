@@ -5,7 +5,7 @@ const User = require("../models/user")
 const Post = require("../models/post")
 const Geojson = require("../models/geojson")
 
-const { endpoint } = require("./utility")
+const { s3FileKey } = require("./utility")
 
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -73,7 +73,7 @@ const s3CheckPP = async user => {
 
     if (data.Contents instanceof Array) {
       data.Contents.forEach(async file => { // For each object in user_id/profile-picture/ directory,
-        if (file.Key !== endpoint(user.profile_picture)) { // check if the filename matches what's in the database.
+        if (file.Key !== s3FileKey(user.profile_picture)) { // check if the filename matches what's in the database.
           await s3.deleteObject({ // If it's not in the database, remove that file from s3.
             Bucket: process.env.AWS_BUCKET,
             Key: file.Key,
@@ -96,7 +96,7 @@ const s3CheckIcon = async user => {
 
     if (data.Contents instanceof Array) {
       data.Contents.forEach(async file => { // For each object in the user_id/icon/ directory,
-        if (file.Key !== endpoint(user.icon)) { // check if the filename matches what's in the database.
+        if (file.Key !== s3FileKey(user.icon)) { // check if the filename matches what's in the database.
           await s3.deleteObject({ // If it's not in the database, remove that file from s3.
             Bucket: process.env.AWS_BUCKET,
             Key: file.Key,
