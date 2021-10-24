@@ -7,6 +7,12 @@ const postPopulationObj = [
   {
     path: 'track',
     model: 'Track',
+    populate: [
+      {
+        path: 'geojson',
+        model: 'Geojson',
+      },
+    ],
   },
   {
     path: 'geojson',

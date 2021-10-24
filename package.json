@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "develop": "nodemon index"
+    "dev": "nodemon index"
   },
   "dependencies": {
     "aws-sdk": "^2.962.0",
