@@ -24,6 +24,7 @@ module.exports = {
           name: filename,
           geojson: JSON.stringify(geoData.geojson),
           stats: JSON.stringify({
+            coords: geoData.coords,
             distance: geoData.distance,
             elevation: geoData.elevation,
             slopes: geoData.slopes,

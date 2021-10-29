@@ -78,6 +78,25 @@ const signTokens = user => {
   }
 }
 
+// Find the average number from an array of numbers.
+const findAvgNumber = arr => arr.reduce(( p, c ) => p + c, 0) / arr.length
+
+// Find the average lat and lon of a gpx file.
+const findAvgGPXLatLon = points => {
+  const lats = []
+  const lons = []
+  
+  points.forEach(point => {
+    lats.push(point.lat)
+    lons.push(point.lon)
+  })
+
+  return {
+    lat: Number(findAvgNumber(lats).toFixed(6)),
+    lon: Number(findAvgNumber(lons).toFixed(6)),
+  }
+}
+
 // Convert a stringified GPX file to geojson and generate data.
 const GPXtoGeojson = gpxString => {
   const gpx = new gpxParser()
@@ -91,6 +110,7 @@ const GPXtoGeojson = gpxString => {
   })
 
   return {
+    coords: findAvgGPXLatLon(gpx.tracks[0].points),
     geojson: gpx.toGeoJSON(),
     distance: {
       ...gpx.tracks[0].distance,

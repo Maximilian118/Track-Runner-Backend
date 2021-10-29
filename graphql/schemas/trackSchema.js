@@ -23,6 +23,7 @@ module.exports = trackSchema = `
     country: String!,
     location: String!,
     logo: String,
+    geojson: ID,
     gpx: String,
     stats: String,
   }

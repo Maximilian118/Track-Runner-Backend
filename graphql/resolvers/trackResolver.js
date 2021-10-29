@@ -18,7 +18,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const { user_id, post_id, name, country, location, logo, gpx, stats } = args.trackInput
+      const { user_id, post_id, name, country, location, logo, geojson, gpx, stats } = args.trackInput
 
       const user = await User.findById(user_id).populate(userPopulationObj)
       if (user_id && !user) throw new Error("A User by that ID was not found!")
@@ -31,7 +31,7 @@ module.exports = {
 
       let newGeojson = null
 
-      if (gpx) {
+      if (!geojson && gpx) {
         const geoData = GPXtoGeojson(gpx)
         newGeojson = new Geojson(
           {
@@ -40,6 +40,7 @@ module.exports = {
             name,
             geojson: JSON.stringify(geoData.geojson),
             stats: JSON.stringify({
+              coords: geoData.coords,
               distance: geoData.distance,
               elevation: geoData.elevation,
               slopes: geoData.slopes,
@@ -59,7 +60,7 @@ module.exports = {
           country,
           location,
           logo: logo ? logo : null,
-          geojson: newGeojson ? newGeojson._id : null,
+          geojson: geojson ? geojson : newGeojson ? newGeojson._id : null,
           stats: stats ? stats : null,
         },
         err => {
@@ -74,8 +75,15 @@ module.exports = {
 
       await newTrack.save()
 
+      if (geojson) {
+        const geo = await Geojson.findById(geojson)
+        newGeojson = geo
+        geo.track = newTrack._id
+        await geo.save()
+      }
+
       if (user) {
-        newGeojson && user.geojsons.push(newGeojson._id)
+        newGeojson && gpx && user.geojsons.push(newGeojson._id)
         user.tracks.push(newTrack._id)
         user.updated_at = moment().format()
         await user.save()
