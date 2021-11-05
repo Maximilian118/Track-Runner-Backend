@@ -6,7 +6,7 @@ module.exports = postSchema = `
     description: String
     track: Track
     geojson: Geojson
-    lap_time: String!
+    lap_time: String
     distance: String!
     runDT: String!
     imgs: [String!]
@@ -22,7 +22,7 @@ module.exports = postSchema = `
     description: String
     track: ID
     geojson: ID
-    lapTime: String!
+    lapTime: String
     distance: String!
     runDT: String!
     imgs: String

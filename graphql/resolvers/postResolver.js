@@ -13,7 +13,7 @@ module.exports = {
     }
     try {
       const { title, description, track, geojson, lapTime, distance, runDT, imgs } = args.postInput
-
+      
       const user = await User.findById(req._id)
       if (!user) throw new Error("A User by that ID was not found!")
 
@@ -24,7 +24,7 @@ module.exports = {
           description: description ? description : null,
           track: track ? track : null,
           geojson: geojson ? geojson : null,
-          lap_time: lapTime,
+          lap_time: lapTime ? lapTime : null,
           distance: Number(distance),
           runDT,
           imgs: imgs ? JSON.parse(imgs) : null,
