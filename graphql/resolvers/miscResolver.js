@@ -277,7 +277,7 @@ module.exports = {
       if (feed.length === 0) throw new Error("No Posts were found! Picnic! (╯°□°)╯︵ ┻━┻")
 
       return {
-        feed: JSON.stringify(feed),
+        feed: JSON.stringify(feed.reverse()),
         tokens: req.tokens,
       }
     } catch (err) {
