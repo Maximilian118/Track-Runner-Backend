@@ -235,7 +235,7 @@ module.exports = {
         ACL: 'public-read',
       }
 
-      const signedRequest = s3.getSignedUrl('putect', s3Params)
+      const signedRequest = s3.getSignedUrl('putObject', s3Params)
       const url = `http://${process.env.AWS_BUCKET}.s3.eu-west-2.amazonaws.com/${filename}`
 
       return {
