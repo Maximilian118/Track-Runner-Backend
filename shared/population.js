@@ -1,5 +1,19 @@
-// Population object for a Post.
-const postPopulationObj = [
+// Population for followed Users.
+const followedUsersPopulation = [
+  {
+    path: 'posts',
+    model: 'Post',
+    populate: [
+      {
+        path: 'user',
+        model: 'User',
+      },
+    ],
+  },
+]
+
+// Population for a Post.
+const postPopulation = [
   {
     path: 'user',
     model: 'User',
@@ -20,8 +34,8 @@ const postPopulationObj = [
   },
 ]
 
-// Population object for a Track.
-const trackPopulationObj = [
+// Population for a Track.
+const trackPopulation = [
   {
     path: 'geojson',
     model: 'Geojson',
@@ -36,31 +50,22 @@ const trackPopulationObj = [
   },
 ]
 
-// Population object for a User.
-const userPopulationObj = [
+// Population for a User.
+const userPopulation = [
   {
     path: 'posts',
     model: 'Post',
-    populate: postPopulationObj,
+    populate: postPopulation,
   },
   {
     path: 'following',
     model: 'User',
-    populate: {
-      path: 'posts',
-      model: 'Post',
-      populate: [
-        {
-          path: 'user',
-          model: 'User',
-        },
-      ],
-    },
+    populate: followedUsersPopulation,
   },
   {
     path: 'tracks',
     model: 'Track',
-    populate: trackPopulationObj,
+    populate: trackPopulation,
   },
   {
     path: 'geojsons',
@@ -68,16 +73,32 @@ const userPopulationObj = [
   },
 ]
 
-// Population object for a Round.
-const roundPopulationObj = [
+// Population for a Round.
+const roundPopulation = [
   {
     path: 'track',
     model: 'Track',
-    populate: trackPopulationObj,
+    populate: trackPopulation,
   },
 ]
 
-exports.postPopulationObj = postPopulationObj
-exports.userPopulationObj = userPopulationObj
-exports.trackPopulationObj = trackPopulationObj
-exports.roundPopulationObj = roundPopulationObj
+// Population for the feed.
+const feedUserPopulation = [
+  {
+    path: 'posts',
+    model: 'Post',
+    populate: postPopulation,
+  },
+  {
+    path: 'following',
+    model: 'User',
+    populate: followedUsersPopulation,
+  },
+]
+
+exports.followedUsersPopulation = followedUsersPopulation
+exports.postPopulation = postPopulation
+exports.userPopulation = userPopulation
+exports.trackPopulation = trackPopulation
+exports.roundPopulation = roundPopulation
+exports.feedUserPopulation = feedUserPopulation

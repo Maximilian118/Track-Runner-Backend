@@ -4,7 +4,7 @@ const User = require("../../models/user")
 const Post = require("../../models/post")
 const Geojson = require("../../models/geojson")
 
-const { postPopulationObj } = require("../../shared/population")
+const { postPopulation } = require("../../shared/population")
 
 module.exports = {
   createPost: async (args, req) => {
@@ -46,7 +46,7 @@ module.exports = {
       user.updated_at = moment().format()
       await user.save()
 
-      const newPost = await Post.findById(post._id).populate(postPopulationObj)
+      const newPost = await Post.findById(post._id).populate(postPopulation)
 
       return {
         ...newPost._doc,

@@ -25,6 +25,7 @@ module.exports = buildSchema(`
     calendar(calendar: String!, calScope: Int): Round!
     signS3(filename: String!, filetype: String!): S3Payload!
     redundantFilesCheck: User!
+    feed(fromDate: String!, amount: Int!): Feed!
   }
 
   type rootMutation {

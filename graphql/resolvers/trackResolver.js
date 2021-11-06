@@ -8,8 +8,8 @@ const Geojson = require("../../models/geojson")
 const { GPXtoGeojson } = require("../../shared/utility")
 
 const {
-  userPopulationObj,
-  trackPopulationObj,
+  userPopulation,
+  trackPopulation,
 } = require("../../shared/population")
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
     try {
       const { user_id, post_id, name, country, location, logo, geojson, gpx, stats } = args.trackInput
 
-      const user = await User.findById(user_id).populate(userPopulationObj)
+      const user = await User.findById(user_id).populate(userPopulation)
       if (user_id && !user) throw new Error("A User by that ID was not found!")
 
       const post = await Post.findById(post_id)
@@ -110,9 +110,9 @@ module.exports = {
       let track = null
       
       if (name) {
-        track = await Track.findOne({name}).populate(trackPopulationObj)
+        track = await Track.findOne({name}).populate(trackPopulation)
       } else if (user_id || post_id || track_id) {
-        track = await Track.findById({ user: user_id, post: post_id, _id: track_id}).populate(trackPopulationObj)
+        track = await Track.findById({ user: user_id, post: post_id, _id: track_id}).populate(trackPopulation)
       }
 
       if (track) {
@@ -138,9 +138,9 @@ module.exports = {
       let track = null
       
       if (name) {
-        track = await Track.findOne({name}).populate(trackPopulationObj)
+        track = await Track.findOne({name}).populate(trackPopulation)
       } else {
-        track = await Track.findById({ _id: track_id}).populate(trackPopulationObj)
+        track = await Track.findById({ _id: track_id}).populate(trackPopulation)
       }
 
       if (!track) throw new Error("A track was not found!")

@@ -5,6 +5,11 @@ module.exports = miscSchema = `
     tokens: String,
   }
 
+  type Feed {
+    feed: String!
+    tokens: String
+  }
+
   type Round {
     _id: ID!
     user: ID

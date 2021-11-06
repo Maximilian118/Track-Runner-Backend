@@ -4,6 +4,7 @@ const aws = require("aws-sdk")
 const User = require("../../models/user")
 const Track = require("../../models/track")
 const Round = require("../../models/round")
+const Post = require("../../models/post")
 
 const { 
   isDuplicateFile,
@@ -11,9 +12,11 @@ const {
 } = require("../../shared/utility")
 
 const {
-  userPopulationObj,
-  trackPopulationObj,
-  roundPopulationObj,
+  userPopulation,
+  trackPopulation,
+  roundPopulation,
+  feedUserPopulation,
+  postPopulation,
 } = require("../../shared/population")
 
 const { redundantFilesCheck } = require("../../shared/redundantFilesCheck")
@@ -34,7 +37,7 @@ module.exports = {
       const { user_id, championship } = args.champInput
       const champ = JSON.parse(championship)
 
-      const user = await User.findById(user_id).populate(userPopulationObj)
+      const user = await User.findById(user_id).populate(userPopulation)
       if (user_id && !user) throw new Error("A User by that ID was not found!")
 
       let champName = null
@@ -50,7 +53,7 @@ module.exports = {
       if (duplicate) throw new Error("A championship by that name already exists!")
 
       const champArr = await Promise.all(champ.map(async round => {
-        const track = await Track.findOne({name: round.track}).populate(trackPopulationObj)
+        const track = await Track.findOne({name: round.track}).populate(trackPopulation)
         if (!track && round.track !== "TBA") throw new Error(`A Track by the name of ${round.track} was not found!`)
 
         const newRound = new Round(
@@ -105,7 +108,7 @@ module.exports = {
       const { user_id, roundObj } = args.roundInput
       const round = JSON.parse(roundObj)
 
-      const user = await User.findById(user_id).populate(userPopulationObj)
+      const user = await User.findById(user_id).populate(userPopulation)
       if (user_id && !user) throw new Error("A User by that ID was not found!")
 
       const champs = await Round.find({championship: round.championship})
@@ -159,7 +162,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const champ = await Round.find({championship: championship}).populate(roundPopulationObj)
+      const champ = await Round.find({championship: championship}).populate(roundPopulation)
       if (!champ || champ.length === 0) throw new Error("Championship not found!")
 
       const sortedChamp = champ.sort((a, b) => (a.round > b.round) ? 1 : -1)
@@ -177,7 +180,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const cal = await Round.find({calendars: calendar}).populate(roundPopulationObj)
+      const cal = await Round.find({calendars: calendar}).populate(roundPopulation)
       if (!cal || cal.length === 0) throw new Error("Calendar not found!")
 
       const sortedCal = []
@@ -232,7 +235,7 @@ module.exports = {
         ACL: 'public-read',
       }
 
-      const signedRequest = s3.getSignedUrl('putObject', s3Params)
+      const signedRequest = s3.getSignedUrl('putect', s3Params)
       const url = `http://${process.env.AWS_BUCKET}.s3.eu-west-2.amazonaws.com/${filename}`
 
       return {
@@ -256,6 +259,25 @@ module.exports = {
 
       return {
         ...user._doc,
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  feed: async ({ fromDate, amount }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findById(req._id).populate(feedUserPopulation)
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      const feed = await Post.find({ created_at: { $lte: fromDate }}).limit(amount).populate(postPopulation)
+      if (feed.length === 0) throw new Error("No Posts were found! Picnic! (╯°□°)╯︵ ┻━┻")
+
+      return {
+        feed: JSON.stringify(feed),
         tokens: req.tokens,
       }
     } catch (err) {

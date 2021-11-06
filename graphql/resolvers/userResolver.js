@@ -12,7 +12,7 @@ const {
   isDuplicateFile,
 } = require('../../shared/utility')
 
-const { userPopulationObj } = require('../../shared/population')
+const { userPopulation } = require('../../shared/population')
 
 module.exports = {
   createUser: async args => {
@@ -99,7 +99,7 @@ module.exports = {
   },
   login: async ({ email, password }) => {
     try {
-      const user = await User.findOne({email}).populate(userPopulationObj)
+      const user = await User.findOne({email}).populate(userPopulation)
       if (!user) throw new Error(JSON.stringify({
         type: "email",
         message: "An account by that email was not found!",
@@ -135,7 +135,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findById(_id).populate(userPopulationObj)
+      const user = await User.findById(_id).populate(userPopulation)
       if (!user) throw new Error("A User by that ID was not found!")
 
       return {
@@ -149,7 +149,7 @@ module.exports = {
   },
   forgot: async ({ email }) => {
     try {
-      const user = await User.findOne({email}).populate(userPopulationObj)
+      const user = await User.findOne({email}).populate(userPopulation)
       if (!user) throw new Error(JSON.stringify({
         type: "email",
         message: "An account by that email was not found!",
@@ -213,7 +213,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findOne({_id}).populate(userPopulationObj)
+      const user = await User.findOne({_id}).populate(userPopulation)
       if (!user) throw new Error(JSON.stringify({
         type: "ID",
         message: "A User by that ID was not found!",
@@ -244,7 +244,7 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findById(_id).populate(userPopulationObj)
+      const user = await User.findById(_id).populate(userPopulation)
       if (!user) throw new Error("A User by that ID was not found!")
 
       if (isDuplicateFile(user.icon, icon)) throw new Error("Duplicate Icon!")
