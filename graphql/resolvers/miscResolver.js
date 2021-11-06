@@ -4,7 +4,6 @@ const aws = require("aws-sdk")
 const User = require("../../models/user")
 const Track = require("../../models/track")
 const Round = require("../../models/round")
-const Post = require("../../models/post")
 
 const { 
   isDuplicateFile,
@@ -15,8 +14,6 @@ const {
   userPopulation,
   trackPopulation,
   roundPopulation,
-  feedUserPopulation,
-  postPopulation,
 } = require("../../shared/population")
 
 const { redundantFilesCheck } = require("../../shared/redundantFilesCheck")
@@ -259,25 +256,6 @@ module.exports = {
 
       return {
         ...user._doc,
-        tokens: req.tokens,
-      }
-    } catch (err) {
-      throw err
-    }
-  },
-  feed: async ({ fromDate, amount }, req) => {
-    if (!req.isAuth) {
-      throw new Error("Not Authenticated!")
-    }
-    try {
-      const user = await User.findById(req._id).populate(feedUserPopulation)
-      if (!user) throw new Error("A User by that ID was not found!")
-
-      const feed = await Post.find({ created_at: { $lte: fromDate }}).limit(amount).populate(postPopulation)
-      if (feed.length === 0) throw new Error("No Posts were found! Picnic! (╯°□°)╯︵ ┻━┻")
-
-      return {
-        feed: JSON.stringify(feed.reverse()),
         tokens: req.tokens,
       }
     } catch (err) {
