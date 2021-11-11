@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
 	email: { type: String, required: true }, // User Email.
 	icon: { type: String, required: false, default: "" }, // User Icon. Same image as Profile Picture but compressed to aprox 0.05mb.
 	profile_picture: { type: String, required: false, default: "" }, // User Profile Picture. Compressed to aprox 0.5mb.
-	likes: { type: Number, default: 0 }, // A total of all the likes this User has received.
+	likes: [{ type: mongoose.Schema.ObjectId, ref: 'User' }], // A total of all the likes this User has received.
 	password: { type: String, required: false, min: 8 }, // User encryptied password.
 	refresh_count: { type: Number, default: 0 }, // Refresh count.
 	logged_in_at: { type: String, default: null }, // Last logged in.

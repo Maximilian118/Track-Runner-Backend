@@ -56,4 +56,20 @@ module.exports = {
       throw err
     }
   },
+  post: async ({ post_id }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const post = await Post.findById(post_id)
+      if (!post) throw new Error("A Post by that ID was not found!")
+
+      return {
+        ...post._doc,
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }

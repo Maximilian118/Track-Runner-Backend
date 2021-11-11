@@ -14,7 +14,7 @@ module.exports = authSchema = `
     email: String!
     icon: String!
     profile_picture: String!
-    likes: Int!
+    likes: [ID]!
     logged_in_at: String!
     created_at: String!
     updated_at: String!

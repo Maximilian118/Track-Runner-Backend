@@ -10,7 +10,7 @@ const trackSchema = new mongoose.Schema({
   logo: { type: String, required: false }, // Track logo img url.
   geojson: { type: mongoose.Schema.ObjectId, required: false }, // stringified geojson of the Track.
   stats: { type: String, required: false }, // Track stats.
-  likes: { type: Number, default: 0 }, // Likes the Track has recieved.
+  likes: [{ type: mongoose.Schema.ObjectId, ref: 'User' }], // Likes the Track has recieved.
   created_at: { type: String, default: moment().format() }, // When the Track was created.
   updated_at: { type: String, default: moment().format() }, // Last time the Track was updated.
 })

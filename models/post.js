@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema({
   distance: { type: Number, required: true }, // The total distance of the run. NOT the distance of one lap.
   runDT: { type: String, required: true }, // The date and time of the activity.
   imgs: [{ type: String }], // An array of image url strings associated with the Post.
-  likes: { type: Number, default: 0 }, // How many likes has this Post received?
+  likes: [{ type: mongoose.Schema.ObjectId, ref: 'User' }], // How many likes has this Post received.
   comments: [{ type: mongoose.Schema.ObjectId, ref: 'Comment' }], // An Array of comments for this Post.
   created_at: { type: String, default: moment().format() }, // When was the Post created?
   updated_at: { type: String, default: moment().format() }, // When was the last time the Post was mutated?

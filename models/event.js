@@ -9,7 +9,7 @@ const eventSchema = new mongoose.Schema({
   startDate: { type: String, required: true }, // The start date & time of the Event.
   endDate: { type: String, required: false }, // The end date & time of the Event.
   img: { type: String, required: false }, // An image url associated with the event.
-  likes: { type: Number, default: 0 }, // The likes this Event has recieved?
+  likes: [{ type: mongoose.Schema.ObjectId, ref: 'User' }], // The likes this Event has recieved.
   participants: [{ type: mongoose.Schema.ObjectId, ref: 'User' }], // An Array of Users participating in the Event.
   created_at: { type: String, default: moment().format() }, // When the Event was created.
   updated_at: { type: String, default: moment().format() }, // When the Event was updated.

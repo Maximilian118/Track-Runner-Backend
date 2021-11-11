@@ -10,6 +10,16 @@ module.exports = miscSchema = `
     tokens: String
   }
 
+  type Like {
+    object_type: String!
+    object_id: ID!
+    old_likes: [ID]!
+    old_likes_length: Int!
+    new_likes: [ID]!
+    new_likes_length: Int!
+    tokens: String
+  }
+
   type Round {
     _id: ID!
     user: ID
@@ -22,7 +32,7 @@ module.exports = miscSchema = `
     from: String!
     to: String!
     sessions: String!
-    likes: Int!
+    likes: [ID]!
     created_at: String!
     updated_at: String!
     rounds: String

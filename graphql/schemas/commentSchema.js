@@ -4,7 +4,7 @@ module.exports = commentSchema = `
     user: User!
     post: Post!
     comment: String!
-    likes: Int!
+    likes: [ID]!
     created_at: String!
     updated_at: String!
     tokens: String

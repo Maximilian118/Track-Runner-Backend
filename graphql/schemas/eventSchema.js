@@ -8,7 +8,7 @@ module.exports = eventSchema = `
     startDate: String!
     endDate: String!
     img: String
-    likes: Int!
+    likes: [ID]!
     participants: [User]!
     tokens: String
   }

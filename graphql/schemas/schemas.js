@@ -21,6 +21,7 @@ module.exports = buildSchema(`
     user(_id: ID!): User! 
     login(email: String!, password: String): User!
     track(user_id: ID, post_id: ID, track_id: ID, name: String): Track!
+    post(post_id: ID!): Post!
     championship(championship: String!): Round!
     calendar(calendar: String!, calScope: Int): Round!
     signS3(filename: String!, filetype: String!): S3Payload!
@@ -39,6 +40,7 @@ module.exports = buildSchema(`
     forgot(email: String!): User!
     updateProfilePicture(_id: ID!, profile_picture: String!, icon: String!): User!
     createGeojson(gpx: String!, filename: String!): Geojson!
+    like(object_type: String!, object_id: ID!, action: String!): Like!
   }
 
   schema {

@@ -9,7 +9,7 @@ module.exports = trackSchema = `
     logo: String,
     geojson: Geojson,
     stats: String,
-    likes: Int!
+    likes: [ID]!
     created_at: String!,
     updated_at: String!,
     tracks: String!

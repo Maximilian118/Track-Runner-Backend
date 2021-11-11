@@ -4,6 +4,7 @@ const aws = require("aws-sdk")
 const User = require("../../models/user")
 const Track = require("../../models/track")
 const Round = require("../../models/round")
+const Post = require('../../models/post')
 
 const { 
   isDuplicateFile,
@@ -256,6 +257,52 @@ module.exports = {
 
       return {
         ...user._doc,
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
+  like: async ({ object_type, object_id, action }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      let object = null
+
+      switch (object_type) {
+        case "post": object = await Post.findById(object_id); break
+        case "track": object = await Track.findById(object_id); break
+        case "round": object = await Round.findById(object_id); break
+        default: object = null
+      }
+
+      if (!object) throw new Error(`A ${object_type} by that ID was not found!`)
+      if (!('likes' in object)) throw new Error(`The object ${object_type} does not possess a likes key.`)
+
+      const old_likes = object.likes
+      let new_likes = null
+
+      switch (action) {
+        case "add": new_likes = [ ...object.likes, req._id ]; break
+        case "remove": new_likes = object.likes.filter(user_id => user_id.toString() !== req._id); break
+        default: new_likes = null
+      }
+
+      if (new_likes instanceof Array) {
+        object.likes = new_likes
+        await object.save()
+      } else {
+        throw new Error(`Invalid action.`)
+      }
+
+      return {
+        object_type,
+        object_id,
+        old_likes,
+        old_likes_length: old_likes.length,
+        new_likes,
+        new_likes_length: new_likes.length,
         tokens: req.tokens,
       }
     } catch (err) {
