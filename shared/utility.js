@@ -81,14 +81,21 @@ const signTokens = user => {
 // Find the average number from an array of numbers.
 const findAvgNumber = arr => arr.reduce(( p, c ) => p + c, 0) / arr.length
 
-// Find the average lat and lon of a gpx file.
+// Find the average lat and lon of a GPX file or Array of geojson coordinates.
 const findAvgGPXLatLon = points => {
   const lats = []
   const lons = []
   
   points.forEach(point => {
-    lats.push(point.lat)
-    lons.push(point.lon)
+    const isGPX = !!point.lat && !!point.lon
+    
+    if (isGPX) {
+      lats.push(point.lat)
+      lons.push(point.lon)
+    } else {
+      lats.push(point[1])
+      lons.push(point[0])
+    }
   })
 
   return {
@@ -97,24 +104,80 @@ const findAvgGPXLatLon = points => {
   }
 }
 
+// Find the average in an array of numbers.
+const intsAverage = arr => arr.reduce(( p, c ) => p + c, 0) / arr.length
+
+// Check if a val is a valid number.
+const validInt = val => !isNaN(val) && val !== -Infinity
+
+// Find the next valid number in an array.
+const findNextValid = (arr, errIndex) => {
+  let valid = null
+
+  for (let i = 0; i < arr.length; i++) {
+    const val = arr[(i + errIndex) % arr.length]
+
+    if (validInt(val)) {
+      valid = val
+      break
+    }
+  }
+
+  return valid
+}
+
+// Smooth the slope array.
+// If length passed then smooth.length === length.
+const smoothInts = (arr, length) => {
+  const smooth = []
+
+  arr.forEach((int, i) => {
+    if (!validInt(int)) {
+      int = findNextValid(arr, i)
+    }
+
+    const avg = Number(intsAverage([ 
+      validInt(arr[i-2]) ? arr[i-2] : int,
+      validInt(arr[i-1]) ? arr[i-1] : int,
+      int,
+      validInt(arr[i+1]) ? arr[i+1] : int,
+      validInt(arr[i+2]) ? arr[i+2] : int,
+    ]).toFixed(2))
+
+    validInt(avg) && smooth.push(avg)
+  })
+
+  if (length && !isNaN(length) && length !== smooth.length) {
+    const larger = length > smooth.length
+    const loops = larger ? length - smooth.length : smooth.length - length
+
+    for (let i = 0; i < loops; i++) {
+      if (larger) {
+        smooth.push(smooth.at(-1))
+      } else {
+        smooth.pop()
+      }
+    }
+  }
+
+  return smooth
+}
+
 // Convert a stringified GPX file to geojson and generate data.
 const GPXtoGeojson = gpxString => {
   const gpx = new gpxParser()
   gpx.parse(gpxString)
 
-  const slopes = []
-  gpx.tracks[0].slopes.forEach(slope => {
-    if (!isNaN(slope)) {
-      slopes.push(Number(slope.toFixed(2)))
-    }
-  })
+  const elevArr = gpx.tracks[0].points.map(point => Number(point.ele.toFixed(2)))
+  const total = Number(gpx.tracks[0].distance.total.toFixed(2))
 
   return {
     coords: findAvgGPXLatLon(gpx.tracks[0].points),
     geojson: gpx.toGeoJSON(),
     distance: {
       ...gpx.tracks[0].distance,
-      total: Number(gpx.tracks[0].distance.total.toFixed(2)),
+      total,
+      totalKm: Number((total / 1000).toFixed(3)),
       cumul: gpx.tracks[0].distance.cumul.map(dist => Number(dist.toFixed(2))),
     },
     elevation: {
@@ -123,9 +186,9 @@ const GPXtoGeojson = gpxString => {
       neg: Number(gpx.tracks[0].elevation.neg.toFixed(2)),
       avg: Number(gpx.tracks[0].elevation.avg.toFixed(2)),
       dif: Number(Math.abs(gpx.tracks[0].elevation.max - gpx.tracks[0].elevation.min).toFixed(2)),
-      elevArr: gpx.tracks[0].points.map(point => Number(point.ele.toFixed(2))),
+      elevArr,
     },
-    slopes,
+    slopes: smoothInts(gpx.tracks[0].slopes, elevArr.length),
   }
 }
 
@@ -231,6 +294,7 @@ const roundData = rounds => {
   return withConsecDays(withData)
 }
 
+exports.smoothInts = smoothInts
 exports.endpoint = endpoint
 exports.s3FileKey = s3FileKey
 exports.formatString = formatString
@@ -240,3 +304,4 @@ exports.emptyS3Directory = emptyS3Directory
 exports.signTokens = signTokens
 exports.GPXtoGeojson = GPXtoGeojson
 exports.roundData = roundData
+exports.findAvgGPXLatLon = findAvgGPXLatLon
