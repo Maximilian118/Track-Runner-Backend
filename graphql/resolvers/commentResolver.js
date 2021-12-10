@@ -27,7 +27,7 @@ module.exports = {
 
       await newComment.save()
 
-      post.comments.push(newComment._id)
+      post.comments.unshift(newComment._id)
       await post.save()
 
       return {
