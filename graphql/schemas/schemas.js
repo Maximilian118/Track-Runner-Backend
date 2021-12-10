@@ -41,6 +41,7 @@ module.exports = buildSchema(`
     updateProfilePicture(_id: ID!, profile_picture: String!, icon: String!): User!
     createGeojson(gpx: String!, filename: String!): Geojson!
     like(object_type: String!, object_id: ID!, action: String!): Like!
+    createComment(post_id: ID!, comment: String!): Comment!
   }
 
   schema {

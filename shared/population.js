@@ -32,6 +32,10 @@ const postPopulation = [
     path: 'geojson',
     model: 'Geojson',
   },
+  // {
+  //   path: 'comments',
+  //   model: 'Comment',
+  // },
 ]
 
 // Population for a Track.
