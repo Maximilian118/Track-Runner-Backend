@@ -14,6 +14,8 @@ module.exports = {
       const post = await Post.findById(post_id)
       if (!post) throw new Error("A Post by that ID was not found!")
 
+      if (comment.length > 240) throw new Error("Comment too long! 240 Characters Maximum.")
+
       const newComment = new Comment(
         {
           user: user._id,

@@ -17,6 +17,8 @@ module.exports = {
       const user = await User.findById(req._id)
       if (!user) throw new Error("A User by that ID was not found!")
 
+      if (title.length > 34) throw new Error("Title too long! 34 Characters Maximum.")
+
       let post = new Post(
         {
           user: user._id,
