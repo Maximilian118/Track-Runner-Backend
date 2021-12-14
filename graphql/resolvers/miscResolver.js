@@ -186,13 +186,16 @@ module.exports = {
       if (!calScope) calScope = 365
 
       for (let i = 0; i < calScope; i++) {
-        const date = moment().add(i, "d").format()
+        const date = moment().add(i, "d").format("YYYY-MM-DD")
         let roundData = {}
   
-        cal.forEach(round => {
-          if (moment(date).isAfter(round.from) && moment(date).isBefore(round.to)) {
+        cal.forEach(round => {      
+          const from = moment(round.from).format("YYYY-MM-DD")
+          const to = moment(round.to).format("YYYY-MM-DD")
+
+          if (moment(date).isBetween(from, to, undefined, '[]')) {
             roundData = round._doc
-          } 
+          }
         })
   
         sortedCal.push({
