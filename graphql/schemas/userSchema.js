@@ -10,6 +10,7 @@ module.exports = authSchema = `
     rounds: [Round]!
     calendars: [String]!
     championships: [String]!
+    coords: [Int!]!
     name: String!
     email: String!
     icon: String!

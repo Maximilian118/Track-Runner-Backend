@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
 	rounds: [{ type: mongoose.Schema.ObjectId, ref: 'Round' }], // Array of Rounds the user has created.
 	calendars: [{ type: String }], // Array of Calendars the User wishes to be displayed.
 	championships: [{ type: String }], // Array of Championships the User has created.
+	coords: [], // Array. Coordinates of the user. [0] === lng, [1] === lat.
 	name: { type: String, required: true }, // User Name.
 	email: { type: String, required: true }, // User Email.
 	icon: { type: String, required: false, default: "" }, // User Icon. Same image as Profile Picture but compressed to aprox 0.05mb.
