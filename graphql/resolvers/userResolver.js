@@ -264,4 +264,28 @@ module.exports = {
       throw err
     }
   },
+  updateCoords: async ({ lng, lat }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findById(req._id).populate(userPopulation)
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      lng = Number(lng)
+      lat = Number(lat)
+
+      user.coords = [ lng, lat ]
+      user.updated_at = moment().format()
+      await user.save()
+
+      return {
+        ...user._doc,
+        tokens: req.tokens,
+        password: null,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }
