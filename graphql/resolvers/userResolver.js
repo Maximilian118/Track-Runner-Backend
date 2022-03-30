@@ -147,6 +147,29 @@ module.exports = {
       throw err
     }
   },
+  users: async ({ searchKey, amount }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findById(req._id)
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      let userArr = []
+
+      switch (searchKey) {
+        case "coords": 
+        default: userArr = [] 
+      }
+
+      return {
+        users: JSON.stringify(userArr),
+        tokens: req.tokens,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
   forgot: async ({ email }) => {
     try {
       const user = await User.findOne({email}).populate(userPopulation)
@@ -264,7 +287,7 @@ module.exports = {
       throw err
     }
   },
-  updateCoords: async ({ lng, lat }, req) => {
+  updateLocation: async ({ location }, req) => {
     if (!req.isAuth) {
       throw new Error("Not Authenticated!")
     }
@@ -272,10 +295,7 @@ module.exports = {
       const user = await User.findById(req._id).populate(userPopulation)
       if (!user) throw new Error("A User by that ID was not found!")
 
-      lng = Number(lng)
-      lat = Number(lat)
-
-      user.coords = [ lng, lat ]
+      user.location = location
       user.updated_at = moment().format()
       await user.save()
 

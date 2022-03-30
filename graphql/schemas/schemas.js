@@ -42,7 +42,7 @@ module.exports = buildSchema(`
     createGeojson(gpx: String!, filename: String!): Geojson!
     like(object_type: String!, object_id: ID!, action: String!): Like!
     createComment(post_id: ID!, comment: String!): Comment!
-    updateCoords(lng: String!, lat: String!): User!
+    updateLocation(location: String!): User!
   }
 
   schema {
