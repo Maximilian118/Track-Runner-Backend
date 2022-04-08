@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
 	rounds: [{ type: mongoose.Schema.ObjectId, ref: 'Round' }], // Array of Rounds the user has created.
 	calendars: [{ type: String }], // Array of Calendars the User wishes to be displayed.
 	championships: [{ type: String }], // Array of Championships the User has created.
-	location: { type: String, required: false, default: JSON.stringify({ latitude: null, longitude: null }) }, // Object of last known coordinate data.
+	location: { type: Object, default: null }, // Object of last known coordinate data.
 	name: { type: String, required: true }, // User Name.
 	email: { type: String, required: true }, // User Email.
 	icon: { type: String, required: false, default: "" }, // User Icon. Same image as Profile Picture but compressed to aprox 0.05mb.
@@ -22,5 +22,7 @@ const userSchema = new mongoose.Schema({
 	created_at: { type: String, default: moment().format() }, // When the user signed up.
 	updated_at: { type: String, default: moment().format() }, // Last user activity.
 })
+
+userSchema.index({ location: "2dsphere" })
 
 module.exports = mongoose.model('User', userSchema)

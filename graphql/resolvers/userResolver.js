@@ -152,18 +152,28 @@ module.exports = {
       throw new Error("Not Authenticated!")
     }
     try {
-      const user = await User.findById(req._id)
+      const user = await User.findById(req._id).populate(userPopulation)
       if (!user) throw new Error("A User by that ID was not found!")
-
+   
       let userArr = []
 
       switch (searchKey) {
-        case "coords": 
+        case "location": userArr = await User.find({
+          location: {
+            $geoNear: {
+              $geometry: {
+                type: "Point",
+                coordinates: [ user.location.longitude, user.location.latitude ]
+              },
+            }
+          }
+        }); break
         default: userArr = [] 
       }
 
       return {
-        users: JSON.stringify(userArr),
+        searchKey,
+        users: userArr,
         tokens: req.tokens,
       }
     } catch (err) {
@@ -295,7 +305,13 @@ module.exports = {
       const user = await User.findById(req._id).populate(userPopulation)
       if (!user) throw new Error("A User by that ID was not found!")
 
-      user.location = location
+      const newLocation = {
+        ...JSON.parse(location),
+        created_at: user.location ? user.location.created_at : moment().format(),
+        updated_at: moment().format(),
+      }
+
+      user.location = newLocation
       user.updated_at = moment().format()
       await user.save()
 

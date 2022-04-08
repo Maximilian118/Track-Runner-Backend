@@ -19,6 +19,7 @@ module.exports = buildSchema(`
 
   type rootQuery {
     user(_id: ID!): User! 
+    users(searchKey: String! amount: Int!): Users!
     login(email: String!, password: String): User!
     track(user_id: ID, post_id: ID, track_id: ID, name: String): Track!
     post(post_id: ID!): Post!
