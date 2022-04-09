@@ -44,6 +44,7 @@ module.exports = buildSchema(`
     like(object_type: String!, object_id: ID!, action: String!): Like!
     createComment(post_id: ID!, comment: String!): Comment!
     updateLocation(location: String!): User!
+    updateFollowing(user_id: String!): User!
   }
 
   schema {

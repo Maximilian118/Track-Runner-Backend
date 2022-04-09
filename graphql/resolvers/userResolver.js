@@ -324,4 +324,32 @@ module.exports = {
       throw err
     }
   },
+  updateFollowing: async ({ user_id }, req) => {
+    if (!req.isAuth) {
+      throw new Error("Not Authenticated!")
+    }
+    try {
+      const user = await User.findById(req._id).populate(userPopulation)
+      if (!user) throw new Error("A User by that ID was not found!")
+
+      if (user.following.some(f => f._id.toString() === user_id)) {
+        user.following = user.following.filter(f => f._id.toString() !== user_id)
+      } else {
+        user.following = [ user_id, ...user.following ]
+      }
+
+      user.updated_at = moment().format()
+      await user.save()
+
+      const newUser = await User.findById(req._id).populate(userPopulation)
+
+      return {
+        ...newUser._doc,
+        tokens: req.tokens,
+        password: null,
+      }
+    } catch (err) {
+      throw err
+    }
+  },
 }
