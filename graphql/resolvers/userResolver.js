@@ -157,8 +157,8 @@ module.exports = {
    
       let userArr = []
 
-      switch (searchKey) {
-        case "location": userArr = await User.find({
+      const byLocation = async user => {
+        const arr = await User.find({
           location: {
             $geoNear: {
               $geometry: {
@@ -167,7 +167,13 @@ module.exports = {
               },
             }
           }
-        }); break
+        })
+
+        return arr.filter(u => u._id.toString() !== user._id.toString())
+      }
+
+      switch (searchKey) {
+        case "location": userArr = await byLocation(user); break
         default: userArr = [] 
       }
 
