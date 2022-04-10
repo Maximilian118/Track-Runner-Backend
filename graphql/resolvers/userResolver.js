@@ -169,7 +169,10 @@ module.exports = {
           }
         })
 
-        return arr.filter(u => u._id.toString() !== user._id.toString())
+        const arrNoUser = arr.filter(u => u._id.toString() !== user._id.toString())
+
+        const toRemove = new Set(user.following.map(u => u._id.toString()))
+        return arrNoUser.filter(u => !toRemove.has(u._id.toString()))
       }
 
       switch (searchKey) {
